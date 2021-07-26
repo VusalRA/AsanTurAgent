@@ -3,6 +3,7 @@ package com.example.turaiagent.services;
 import com.example.turaiagent.models.Agent;
 import com.example.turaiagent.models.AgentRequest;
 import com.example.turaiagent.models.Archive;
+import com.example.turaiagent.models.Offer;
 
 import java.util.List;
 
@@ -15,5 +16,7 @@ public interface AgentServive {
     List<Archive> getArchiveList(Long agentId);
 
     List<AgentRequest> getOfferedRequests(Long agentId);
+
+    Offer createOffer(Offer offer, Long agentId);
 
 }

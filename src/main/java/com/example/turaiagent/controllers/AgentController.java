@@ -3,6 +3,7 @@ package com.example.turaiagent.controllers;
 import com.example.turaiagent.models.Agent;
 import com.example.turaiagent.models.AgentRequest;
 import com.example.turaiagent.models.Archive;
+import com.example.turaiagent.models.Offer;
 import com.example.turaiagent.services.AgentServive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +39,10 @@ public class AgentController {
     @GetMapping("/offered/{agentId}")
     public ResponseEntity<List<AgentRequest>> getOfferedRequests(@PathVariable Long agentId) {
         return ResponseEntity.ok(agentServive.getOfferedRequests(agentId));
+    }
+
+    @PostMapping("/offered/{agentId}")
+    public ResponseEntity<Offer> getRequestOffer(@PathVariable Long agentId, @RequestBody Offer offer) {
+        return ResponseEntity.ok(agentServive.createOffer(offer, agentId));
     }
 }

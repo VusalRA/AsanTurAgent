@@ -21,4 +21,5 @@ public class AgentRequest {
     @Column(name = "request_id")
     private Long requestId;
     private String status;
+
 }
