@@ -21,5 +21,7 @@ public class AgentRequest {
     @Column(name = "request_id")
     private Long requestId;
     private String status;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
 }

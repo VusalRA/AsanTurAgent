@@ -21,5 +21,6 @@ public class Agent {
     private String surname;
     @Column(name = "company_name")
     private String companyName;
+    private String email;
 
 }

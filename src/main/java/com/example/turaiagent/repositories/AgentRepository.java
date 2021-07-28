@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AgentRepository extends JpaRepository<Agent, Long> {
 
-    Agent findByCompanyName(String name);
+    Agent findByEmail(String name);
 
 }

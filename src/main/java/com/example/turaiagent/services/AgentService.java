@@ -7,7 +7,7 @@ import com.example.turaiagent.models.Offer;
 
 import java.util.List;
 
-public interface AgentServive {
+public interface AgentService {
 
     Agent registerAgent(Agent agent);
 

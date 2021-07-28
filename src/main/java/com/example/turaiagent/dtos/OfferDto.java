@@ -1,4 +1,4 @@
-package com.example.turaiagent.models;
+package com.example.turaiagent.dtos;
 
 import lombok.*;
 
@@ -8,10 +8,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 
-public class Accept {
+public class OfferDto {
 
+    private Long id;
     private String uuid;
+    private String companyName;
     private String email;
-    private String phoneNumber;
+    private byte[] file;
 
 }

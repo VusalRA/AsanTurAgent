@@ -3,6 +3,7 @@ package com.example.turaiagent.models;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,4 +20,8 @@ public class Request {
     private String data;
     @Column(name = "phone_number")
     private String phoneNumber;
+    @Column(name = "request_date_time")
+    private LocalDateTime requestDateTime;
+    @Column(name = "request_end_date")
+    private LocalDateTime requestEndDate;
 }
