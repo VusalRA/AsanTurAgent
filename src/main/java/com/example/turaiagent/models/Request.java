@@ -22,6 +22,6 @@ public class Request {
     private String phoneNumber;
     @Column(name = "request_date_time")
     private LocalDateTime requestDateTime;
-    @Column(name = "request_end_date")
-    private LocalDateTime requestEndDate;
+    @Column(name = "request_end_date_time")
+    private LocalDateTime requestEndDateTime;
 }

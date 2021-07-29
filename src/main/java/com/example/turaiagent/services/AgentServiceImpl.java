@@ -2,6 +2,7 @@ package com.example.turaiagent.services;
 
 import com.example.turaiagent.configs.RabbitConfig;
 import com.example.turaiagent.dtos.OfferDto;
+import com.example.turaiagent.dtos.RequestDto;
 import com.example.turaiagent.enums.Status;
 import com.example.turaiagent.models.*;
 import com.example.turaiagent.repositories.*;
@@ -15,7 +16,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -29,7 +29,10 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class AgentServiceImpl implements AgentService {
@@ -132,34 +135,6 @@ public class AgentServiceImpl implements AgentService {
         }
     }
 
-    @PostConstruct
-    public void plusHour() {
-//        int hours = 9;
-//
-//        String fromWork = "09:00";
-//        String toWork = "19:00";
-//
-//        LocalTime from = LocalTime.of(9, 00, 00);
-//        LocalTime to = LocalTime.of(19, 00, 00);
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-//
-//        if (LocalDateTime.now().format(formatter).compareTo(toWork) != 1) {
-//            System.out.println("LocalDate: " + LocalDateTime.now());
-//        } else {
-//
-//        }
-
-//        System.out.println(from);
-//        System.out.println(to);
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
-//
-//        String now = LocalDateTime.now().minusHours(3).format(formatter);
-//        String plusHours = LocalDateTime.now().plusHours(8).format(formatter);
-//
-//        System.out.println("NOW: " + now);
-//        System.out.println("PLUS 8 Hours: " + plusHours);
-
-    }
 
     @Override
     public Offer createOffer(Offer offer, Long agentId) {
@@ -191,7 +166,11 @@ public class AgentServiceImpl implements AgentService {
 //        Agent agent = agentRepo.findByCompanyName(accept1.getCompanyName());
         Request request = requestRepo.findByUuid(accept.getUuid());
         Agent agent = agentRepo.findByEmail(accept.getEmail());
+//        System.out.println(accept.getEmail());
+//        System.out.println(request.getId());
+//        System.out.println(agent.getId());
 
+//        System.out.println(accept.getEmail());
         AgentRequest agentRequest = agentRequestRepo.findByAgentIdAndRequestId(agent.getId(), request.getId());
         agentRequest.setStatus(Status.ACCEPT.name());
         agentRequest.setPhoneNumber(accept.getPhoneNumber());
@@ -217,52 +196,25 @@ public class AgentServiceImpl implements AgentService {
 
         return node.get("uuid").textValue();
 
-//        });
-
-//        JsonNode array = objectMapper.readValue(request.getData(), JsonNode.class);
-//        System.out.println(array.toString());
-//        String request2 = array.get("uuid").textValue();
-//        System.out.println(request2);
-
-
-//        try {
-//            RequestTest requestTest = objectMapper.readValue(request.getData(), RequestTest.class);
-//            System.out.println(requestTest.getTravellerCount());
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//            System.out.println("Error with json");
-//        }
     }
 
 
     @RabbitListener(queues = "request_queue")
-    public void listener(Object request) {
-        String data = Arrays.asList(request.toString().split("'")).get(1);
-        String uuid = null;
-        try {
-            uuid = getRequest(data);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    public void listener(RequestDto requestDto) throws IOException {
 
-        Request request1 = requestRepo.save(Request.builder().uuid(uuid).data(data).requestDateTime(LocalDateTime.now()).build());
-
-
+        ObjectMapper objectMapper = new ObjectMapper();
+        String java = objectMapper.writeValueAsString(requestDto.getData());
+        Request request = Request.builder().uuid(requestDto.getUuid()).data(java).requestDateTime(LocalDateTime.now()).requestEndDateTime(endDate(LocalTime.from(LocalDateTime.now()))).build();
+        requestRepo.save(request);
         List<Agent> agentList = agentRepo.findAll();
         agentList.forEach(agent -> agentRequestRepo
                 .save(AgentRequest.builder()
-                        .agentId(agent.getId()).requestId(request1.getId())
+                        .agentId(agent.getId()).requestId(request.getId())
                         .status(Status.NEW_REQUEST.name()).build()));
     }
 
-//    @PostConstruct
-//    public void test() {
-//        Request request1 = requestRepo.findByUuid("d09a8b60-32b0-49e3-ae62-70b269398cb8");
-//
-//        System.out.println(asd(LocalTime.from(request1.getRequestDateTime())));
-//    }
 
-    public static LocalDateTime asd(LocalTime currentTime) {
+    public LocalDateTime endDate(LocalTime currentTime) {
         String startTime = "09:00";
         String endTime = "19:00";
 

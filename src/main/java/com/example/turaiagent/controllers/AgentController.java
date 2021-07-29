@@ -14,7 +14,6 @@ import java.util.List;
 @RequestMapping("api/v1")
 public class AgentController {
 
-
     AgentService agentService;
 
     public AgentController(AgentService agentService) {
