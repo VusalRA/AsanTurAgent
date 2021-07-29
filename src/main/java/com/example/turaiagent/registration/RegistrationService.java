@@ -7,7 +7,12 @@ import com.example.turaiagent.email.EmailSender;
 import com.example.turaiagent.registration.token.ConfirmationToken;
 import com.example.turaiagent.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +22,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RegistrationService {
 
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtUserDetailsService userDetailsService;
+
     private final AppUserService appUserService;
     private final EmailValidator emailValidator;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
-
 
 
     public String register(RegistrationRequest request) {
@@ -73,6 +83,20 @@ public class RegistrationService {
         appUserService.enableAppUser(
                 confirmationToken.getAppUser().getEmail());
         return "confirmed";
+    }
+
+    public String authenticate(String username, String password) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
+
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        return jwtTokenUtil.generateToken(userDetails);
     }
 
     private String buildEmail(String name, String link) {
