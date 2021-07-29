@@ -7,13 +7,13 @@ import com.example.turaiagent.enums.Status;
 import com.example.turaiagent.models.*;
 import com.example.turaiagent.repositories.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -40,6 +40,14 @@ public class AgentServiceImpl implements AgentService {
     @Autowired
     RabbitTemplate rabbitTemplate;
 
+    @Value("${start.time}")
+    String startTime;
+
+    @Value("${end.time}")
+    String endTime;
+
+    @Value("${waiting.hours}")
+    int waitingHours;
 
     List<Offer> list = new ArrayList<>();
 
@@ -83,7 +91,6 @@ public class AgentServiceImpl implements AgentService {
         return agentRequestRepo.findAllByAgentId(agentId);
     }
 
-    //    @PostConstruct
     public String createJpg(Long offerId) throws URISyntaxException, JRException {
         URL res = getClass().getClassLoader().getResource("data.jrxml");
         File file = Paths.get(res.toURI()).toFile();
@@ -100,8 +107,6 @@ public class AgentServiceImpl implements AgentService {
         map.put("createdBy", "Vusal");
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource);
         String path = System.getProperty("user.home") + "\\Desktop\\test.png";
-//        JasperExportManager.exportReportToHtmlFile(jasperPrint, path);
-//        File file = new File(filePath);
         extractPrintImage(path, jasperPrint);
         list.clear();
 
@@ -158,46 +163,16 @@ public class AgentServiceImpl implements AgentService {
 
     @RabbitListener(queues = "accept_queue")
     public void listenAccept(Accept accept) throws JsonProcessingException {
-//        System.out.println(accept.getCompanyName());
-//        String data = Arrays.asList(accept.toString().split("'")).get(1);
-//        System.out.println(data);
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        Accept accept1 = objectMapper.readValue(data, Accept.class);
-//        Agent agent = agentRepo.findByCompanyName(accept1.getCompanyName());
         Request request = requestRepo.findByUuid(accept.getUuid());
         Agent agent = agentRepo.findByEmail(accept.getEmail());
-//        System.out.println(accept.getEmail());
-//        System.out.println(request.getId());
-//        System.out.println(agent.getId());
 
-//        System.out.println(accept.getEmail());
+        System.out.println(accept.getEmail());
         AgentRequest agentRequest = agentRequestRepo.findByAgentIdAndRequestId(agent.getId(), request.getId());
         agentRequest.setStatus(Status.ACCEPT.name());
         agentRequest.setPhoneNumber(accept.getPhoneNumber());
         agentRequestRepo.save(agentRequest);
 
     }
-
-    //    @PostConstruct
-    public String getRequest(String data) throws JsonProcessingException {
-        List<Request> requests = requestRepo.findAll();
-
-        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        requests.forEach(request -> {
-        JsonNode node = null;
-        try {
-            node = objectMapper.readValue(data, JsonNode.class);
-//            System.out.println(node.get("select").textValue());
-            System.out.println(node.get("uuid").textValue());
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return node.get("uuid").textValue();
-
-    }
-
 
     @RabbitListener(queues = "request_queue")
     public void listener(RequestDto requestDto) throws IOException {
@@ -215,9 +190,6 @@ public class AgentServiceImpl implements AgentService {
 
 
     public LocalDateTime endDate(LocalTime currentTime) {
-        String startTime = "09:00";
-        String endTime = "19:00";
-
         LocalDateTime requestDeadline = null;
         if (currentTime.compareTo(LocalTime.parse(startTime)) <= 0) {
             System.out.println("asdasdasd");
@@ -233,23 +205,23 @@ public class AgentServiceImpl implements AgentService {
             requestDeadline = LocalDateTime.parse(date + "T" + time);
             return requestDeadline;
         } else {
-            int c = 3;
+
             LocalTime time1 = currentTime;
-            while (c != 0) {
+            while (waitingHours != 0) {
                 if (!(currentTime.compareTo(LocalTime.parse(endTime)) > 0)) {
                     System.out.println("khgkv");
                     currentTime = currentTime.plusHours(1);
                     requestDeadline = LocalDateTime.parse(String.valueOf(LocalDate.now()) + "T" + String.valueOf(currentTime));
                     if (!(LocalTime.parse(currentTime.getHour() + ":00").compareTo(LocalTime.parse(endTime)) == 0)) {
-                        c--;
+                        waitingHours--;
                     }
                 } else {
                     String date = String.valueOf(LocalDate.now().plusDays(1));
                     String time;
-                    if ((LocalTime.parse(currentTime.getHour() + ":00").compareTo(LocalTime.parse(endTime)) == 0) && c == 1)
+                    if ((LocalTime.parse(currentTime.getHour() + ":00").compareTo(LocalTime.parse(endTime)) == 0) && waitingHours == 1)
                         time = String.valueOf(LocalTime.parse(startTime).plusHours(0).plusMinutes(currentTime.getMinute()));
                     else
-                        time = String.valueOf(LocalTime.parse(startTime).plusHours(c - 1).plusMinutes(currentTime.getMinute()));
+                        time = String.valueOf(LocalTime.parse(startTime).plusHours(waitingHours - 1).plusMinutes(currentTime.getMinute()));
                     requestDeadline = LocalDateTime.parse(date + "T" + time);
                     break;
                 }
@@ -257,6 +229,25 @@ public class AgentServiceImpl implements AgentService {
             return requestDeadline;
         }
     }
+
+    //    public String getRequest(String data) throws JsonProcessingException {
+//        List<Request> requests = requestRepo.findAll();
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+////
+////        requests.forEach(request -> {
+//        JsonNode node = null;
+//        try {
+//            node = objectMapper.readValue(data, JsonNode.class);
+////            System.out.println(node.get("select").textValue());
+//            System.out.println(node.get("uuid").textValue());
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return node.get("uuid").textValue();
+//
+//    }
 
 
 }
