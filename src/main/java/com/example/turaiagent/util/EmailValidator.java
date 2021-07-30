@@ -1,4 +1,4 @@
-package com.example.turaiagent.registration;
+package com.example.turaiagent.util;
 
 import org.springframework.stereotype.Service;
 

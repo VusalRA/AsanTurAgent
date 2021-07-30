@@ -6,6 +6,8 @@ import com.example.turaiagent.appuser.AppUserService;
 import com.example.turaiagent.email.EmailSender;
 import com.example.turaiagent.registration.token.ConfirmationToken;
 import com.example.turaiagent.registration.token.ConfirmationTokenService;
+import com.example.turaiagent.util.EmailValidator;
+import com.example.turaiagent.util.jwt.JwtTokenUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -53,7 +55,9 @@ public class RegistrationService {
         );
 
 
-        String link = "http://localhost:9393/api/v1/registration/confirm?token=" + token;
+//        String link = "http://localhost:9393/api/v1/registration/confirm?token=" + token;
+        String link = "http://localhost:9393/api/v1/registration/confirm/" + token;
+
         System.out.println("LINK: " + link + " TOKEN: " + token);
         emailSender.send(
                 request.getEmail(),

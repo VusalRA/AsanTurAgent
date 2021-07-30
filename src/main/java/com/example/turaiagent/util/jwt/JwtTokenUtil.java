@@ -1,4 +1,4 @@
-package com.example.turaiagent.registration;
+package com.example.turaiagent.util.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

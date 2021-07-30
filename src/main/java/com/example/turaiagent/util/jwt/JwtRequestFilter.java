@@ -1,5 +1,6 @@
-package com.example.turaiagent.registration;
+package com.example.turaiagent.util.jwt;
 
+import com.example.turaiagent.registration.JwtUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

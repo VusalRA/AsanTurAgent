@@ -1,4 +1,4 @@
-package com.example.turaiagent.util;
+package com.example.turaiagent.util.jwt;
 
 import java.io.Serializable;
 

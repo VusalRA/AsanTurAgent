@@ -1,7 +1,7 @@
 package com.example.turaiagent.security.config;
 
 import com.example.turaiagent.appuser.AppUserService;
-import com.example.turaiagent.registration.JwtRequestFilter;
+import com.example.turaiagent.util.jwt.JwtRequestFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,13 +27,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable().authorizeRequests().antMatchers("/api/v*/*/*")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+
+        http.csrf().disable().authorizeRequests()
+//                .antMatchers("/api/v1/registration/confirm/token/*").permitAll()
+                .antMatchers("/api/v1/registration/*/*").permitAll().anyRequest().authenticated()
                 .and().exceptionHandling()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//
+//
+//        http.csrf().disable().authorizeRequests().antMatchers("/api/v1/registration/confirm/token/*").permitAll().anyRequest().authenticated().antMatchers("/api/v*/*/*")
+//                .permitAll()
+//                .anyRequest()
+//                .authenticated()
+//                .and().exceptionHandling()
+//                .and().sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 
 //        http

@@ -7,6 +7,8 @@ import com.example.turaiagent.models.Offer;
 import com.example.turaiagent.services.AgentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 
@@ -37,6 +39,8 @@ public class AgentController {
 
     @GetMapping("/offered/{agentId}")
     public ResponseEntity<List<AgentRequest>> getOfferedRequests(@PathVariable Long agentId) {
+        String i = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader("Authorization");
+        System.out.println("AUTH: " + i);
         return ResponseEntity.ok(agentService.getOfferedRequests(agentId));
     }
 
