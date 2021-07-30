@@ -7,6 +7,7 @@ import com.example.turaiagent.enums.Status;
 import com.example.turaiagent.models.*;
 import com.example.turaiagent.repositories.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -29,10 +30,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AgentServiceImpl implements AgentService {
@@ -89,6 +87,11 @@ public class AgentServiceImpl implements AgentService {
     @Override
     public List<AgentRequest> getOfferedRequests(Long agentId) {
         return agentRequestRepo.findAllByAgentId(agentId);
+    }
+
+    public List<AgentRequest> getOfferedRequestsByEmail(String email) {
+        Agent agent = agentRepo.findByEmail(email);
+        return agentRequestRepo.findAllByAgentId(agent.getId());
     }
 
     public String createJpg(Long offerId) throws URISyntaxException, JRException {
@@ -161,6 +164,21 @@ public class AgentServiceImpl implements AgentService {
         return offer;
     }
 
+    @Override
+    public String getFromToken(String token) throws JsonProcessingException {
+        String[] chunks = token.split("\\.");
+        Base64.Decoder decoder = Base64.getDecoder();
+
+        String header = new String(decoder.decode(chunks[0]));
+        String payload = new String(decoder.decode(chunks[1]));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readValue(payload, JsonNode.class);
+        String s = jsonNode.get("sub").asText();
+
+        return s;
+    }
+
     @RabbitListener(queues = "accept_queue")
     public void listenAccept(Accept accept) throws JsonProcessingException {
         Request request = requestRepo.findByUuid(accept.getUuid());
@@ -229,8 +247,6 @@ public class AgentServiceImpl implements AgentService {
             return requestDeadline;
         }
     }
-
-
 
 
     //    public String getRequest(String data) throws JsonProcessingException {

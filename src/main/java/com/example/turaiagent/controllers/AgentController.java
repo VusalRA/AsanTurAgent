@@ -5,6 +5,7 @@ import com.example.turaiagent.models.AgentRequest;
 import com.example.turaiagent.models.Archive;
 import com.example.turaiagent.models.Offer;
 import com.example.turaiagent.services.AgentService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -37,11 +38,15 @@ public class AgentController {
         return ResponseEntity.ok(agentService.getArchiveList(agentId));
     }
 
-    @GetMapping("/offered/{agentId}")
-    public ResponseEntity<List<AgentRequest>> getOfferedRequests(@PathVariable Long agentId) {
+    //    @GetMapping("/offered/{agentId}")
+    @GetMapping("/offered")
+    public ResponseEntity<List<AgentRequest>> getOfferedRequests() throws JsonProcessingException {
         String i = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader("Authorization");
-        System.out.println("AUTH: " + i);
-        return ResponseEntity.ok(agentService.getOfferedRequests(agentId));
+//        String s = agentService.getFromToken(i);
+        String s = agentService.getFromToken(i.substring(7, i.length()));
+        System.out.println(s);
+
+        return ResponseEntity.ok(agentService.getOfferedRequestsByEmail(s));
     }
 
     @PostMapping("/offered/{agentId}")

@@ -4,6 +4,7 @@ import com.example.turaiagent.models.Agent;
 import com.example.turaiagent.models.AgentRequest;
 import com.example.turaiagent.models.Archive;
 import com.example.turaiagent.models.Offer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
 
@@ -18,5 +19,9 @@ public interface AgentService {
     List<AgentRequest> getOfferedRequests(Long agentId);
 
     Offer createOffer(Offer offer, Long agentId);
+
+    String getFromToken(String token) throws JsonProcessingException;
+
+    List<AgentRequest> getOfferedRequestsByEmail(String email);
 
 }
