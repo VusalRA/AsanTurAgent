@@ -13,10 +13,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-
-    public static final String QUEUE = "vusal_queue";
-    public static final String ROUTING_KEY = "vusal_routingKey";
-    public static final String EXCHANGE = "vusal_exchange";
+    public static final String QUEUE = "offer_queue";
+    public static final String ROUTING_KEY = "offer_routingKey";
+    public static final String EXCHANGE = "rabbit_exchange";
 
     public static final String QUEUE2 = "request_queue";
     public static final String ROUTING_KEY2 = "request_routingKey";

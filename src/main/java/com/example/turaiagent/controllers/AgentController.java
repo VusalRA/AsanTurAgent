@@ -1,6 +1,10 @@
 package com.example.turaiagent.controllers;
 
-import com.example.turaiagent.models.*;
+import com.example.turaiagent.dtos.ResetPasswordDto;
+import com.example.turaiagent.models.Agent;
+import com.example.turaiagent.models.AgentRequest;
+import com.example.turaiagent.models.Archive;
+import com.example.turaiagent.models.Offer;
 import com.example.turaiagent.services.AgentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +22,6 @@ public class AgentController {
         this.agentService = agentService;
     }
 
-//    @PostMapping("/register")
-//    public ResponseEntity<Agent> registerAgent(@RequestBody Agent agent) {
-//        return ResponseEntity.ok(agentService.registerAgent(agent));
-//    }
-
-//    @PostMapping("/register")
-//    public ResponseEntity<AppUserDto> registerAgent(@RequestBody AppUserDto appUserDto) {
-//        return ResponseEntity.ok(agentService.registerUser(appUserDto));
-//    }
-
     @GetMapping("/archive/{requestId}")
     public ResponseEntity<Archive> moveToArchive(@PathVariable Long requestId) throws JsonProcessingException {
         return ResponseEntity.ok(agentService.moveToArchive(agentService.getFromToken().getId(), requestId));
@@ -40,8 +34,6 @@ public class AgentController {
 
     @PostMapping("/offered")
     public ResponseEntity<Offer> getRequestOffer(@RequestBody Offer offer) throws JsonProcessingException {
-//        Agent agent = agentService.getFromToken();
-
         return ResponseEntity.ok(agentService.createOffer(offer, agentService.getFromToken().getId()));
     }
 
@@ -51,7 +43,7 @@ public class AgentController {
     }
 
     @PostMapping("/reset")
-    public ResponseEntity<Agent> getResetPassword(@RequestBody ResetPassword resetPassword) {
-        return ResponseEntity.ok(agentService.resetPassword(resetPassword));
+    public ResponseEntity<Agent> getResetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+        return ResponseEntity.ok(agentService.resetPassword(resetPasswordDto));
     }
 }

@@ -1,11 +1,11 @@
 package com.example.turaiagent.registration;
 
-import com.example.turaiagent.email.EmailSender;
 import com.example.turaiagent.enums.AppUserRole;
 import com.example.turaiagent.models.Agent;
 import com.example.turaiagent.registration.token.ConfirmationToken;
 import com.example.turaiagent.registration.token.ConfirmationTokenService;
 import com.example.turaiagent.services.AgentRegistrationService;
+import com.example.turaiagent.services.email.EmailSender;
 import com.example.turaiagent.util.EmailValidator;
 import com.example.turaiagent.util.jwt.JwtTokenUtil;
 import lombok.AllArgsConstructor;

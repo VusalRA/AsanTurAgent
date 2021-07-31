@@ -1,4 +1,4 @@
-package com.example.turaiagent.models;
+package com.example.turaiagent.dtos;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 
-public class Accept {
+public class AcceptDto {
 
     private String uuid;
     private String email;

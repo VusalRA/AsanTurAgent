@@ -1,5 +1,6 @@
 package com.example.turaiagent.services;
 
+import com.example.turaiagent.dtos.ResetPasswordDto;
 import com.example.turaiagent.models.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -19,6 +20,6 @@ public interface AgentService {
 
     List<AgentRequest> getOfferedRequestsByEmail(String email);
 
-    Agent resetPassword(ResetPassword resetPassword);
+    Agent resetPassword(ResetPasswordDto resetPasswordDto);
 
 }

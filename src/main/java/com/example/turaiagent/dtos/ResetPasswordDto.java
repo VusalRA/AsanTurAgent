@@ -1,4 +1,4 @@
-package com.example.turaiagent.models;
+package com.example.turaiagent.dtos;
 
 
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class ResetPassword {
+public class ResetPasswordDto {
 
     private String oldPassword;
     private String newPassword;

@@ -1,8 +1,10 @@
 package com.example.turaiagent.services;
 
 import com.example.turaiagent.configs.RabbitConfig;
+import com.example.turaiagent.dtos.AcceptDto;
 import com.example.turaiagent.dtos.OfferDto;
 import com.example.turaiagent.dtos.RequestDto;
+import com.example.turaiagent.dtos.ResetPasswordDto;
 import com.example.turaiagent.enums.Status;
 import com.example.turaiagent.models.*;
 import com.example.turaiagent.repositories.*;
@@ -96,10 +98,10 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
-    public Agent resetPassword(ResetPassword resetPassword) {
+    public Agent resetPassword(ResetPasswordDto resetPasswordDto) {
         Agent agent = getFromToken();
-        if (bCryptPasswordEncoder.matches(resetPassword.getOldPassword(), agent.getPassword())) {
-            agent.setPassword(bCryptPasswordEncoder.encode(resetPassword.getNewPassword()));
+        if (bCryptPasswordEncoder.matches(resetPasswordDto.getOldPassword(), agent.getPassword())) {
+            agent.setPassword(bCryptPasswordEncoder.encode(resetPasswordDto.getNewPassword()));
             System.out.println("Password changed");
             System.out.println(agent.getPassword());
         }
@@ -201,14 +203,14 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @RabbitListener(queues = "accept_queue")
-    public void listenAccept(Accept accept) throws JsonProcessingException {
-        Request request = requestRepo.findByUuid(accept.getUuid());
-        Agent agent = agentRepo.findUserByEmail(accept.getEmail());
+    public void listenAccept(AcceptDto acceptDto) throws JsonProcessingException {
+        Request request = requestRepo.findByUuid(acceptDto.getUuid());
+        Agent agent = agentRepo.findUserByEmail(acceptDto.getEmail());
 
-        System.out.println(accept.getEmail());
+        System.out.println(acceptDto.getEmail());
         AgentRequest agentRequest = agentRequestRepo.findByAgentIdAndRequestId(agent.getId(), request.getId());
         agentRequest.setStatus(Status.ACCEPT.name());
-        agentRequest.setPhoneNumber(accept.getPhoneNumber());
+        agentRequest.setPhoneNumber(acceptDto.getPhoneNumber());
         agentRequestRepo.save(agentRequest);
 
     }
