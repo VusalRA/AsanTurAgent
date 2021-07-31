@@ -15,6 +15,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -37,6 +38,8 @@ import java.util.*;
 @Service
 public class AgentServiceImpl implements AgentService {
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
     RabbitTemplate rabbitTemplate;
 
@@ -57,7 +60,8 @@ public class AgentServiceImpl implements AgentService {
     ArchiveRepository archiveRepo;
     OfferRepository offerRepo;
 
-    public AgentServiceImpl(AgentRepository agentRepo, RequestRepository requestRepo, AgentRequestRepository agentRequestRepo, ArchiveRepository archiveRepo, OfferRepository offerRepo) {
+    public AgentServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, AgentRepository agentRepo, RequestRepository requestRepo, AgentRequestRepository agentRequestRepo, ArchiveRepository archiveRepo, OfferRepository offerRepo) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.agentRepo = agentRepo;
         this.requestRepo = requestRepo;
         this.agentRequestRepo = agentRequestRepo;
@@ -91,10 +95,16 @@ public class AgentServiceImpl implements AgentService {
         return agentRequestRepo.findAllByAgentId(agent.getId());
     }
 
-//    @Override
-//    public List<Offer> getAcceptOffers() {
-//
-//    }
+    @Override
+    public Agent resetPassword(ResetPassword resetPassword) {
+        Agent agent = getFromToken();
+        if (bCryptPasswordEncoder.matches(resetPassword.getOldPassword(), agent.getPassword())) {
+            agent.setPassword(bCryptPasswordEncoder.encode(resetPassword.getNewPassword()));
+            System.out.println("Password changed");
+            System.out.println(agent.getPassword());
+        }
+        return agentRepo.save(agent);
+    }
 
     public String createJpg(Long offerId) throws URISyntaxException, JRException {
         URL res = getClass().getClassLoader().getResource("data.jrxml");
@@ -144,8 +154,13 @@ public class AgentServiceImpl implements AgentService {
 
     @Override
     public Offer createOffer(Offer offer, Long agentId) {
+        Agent agent = agentRepo.findById(agentId).get();
+        offer.setEmail(agent.getEmail());
+        offer.setCompanyName(agent.getCompanyName());
+
         Request request = requestRepo.findByUuid(offer.getUuid());
         if (agentRequestRepo.existsByAgentIdAndRequestIdAndStatus(agentId, request.getId(), "NEW_REQUEST")) {
+
             Offer getOffer = offerRepo.save(offer);
             try {
                 createJpg(getOffer.getId());

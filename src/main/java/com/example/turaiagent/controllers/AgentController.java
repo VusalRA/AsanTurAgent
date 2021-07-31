@@ -1,8 +1,6 @@
 package com.example.turaiagent.controllers;
 
-import com.example.turaiagent.models.AgentRequest;
-import com.example.turaiagent.models.Archive;
-import com.example.turaiagent.models.Offer;
+import com.example.turaiagent.models.*;
 import com.example.turaiagent.services.AgentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.ResponseEntity;
@@ -40,14 +38,20 @@ public class AgentController {
         return ResponseEntity.ok(agentService.getArchiveList(agentService.getFromToken().getId()));
     }
 
+    @PostMapping("/offered")
+    public ResponseEntity<Offer> getRequestOffer(@RequestBody Offer offer) throws JsonProcessingException {
+//        Agent agent = agentService.getFromToken();
+
+        return ResponseEntity.ok(agentService.createOffer(offer, agentService.getFromToken().getId()));
+    }
+
     @GetMapping("/offered")
     public ResponseEntity<List<AgentRequest>> getOfferedRequests() throws JsonProcessingException {
         return ResponseEntity.ok(agentService.getOfferedRequestsByEmail(agentService.getFromToken().getEmail()));
     }
 
-    @PostMapping("/offered")
-    public ResponseEntity<Offer> getRequestOffer(@RequestBody Offer offer) throws JsonProcessingException {
-        return ResponseEntity.ok(agentService.createOffer(offer, agentService.getFromToken().getId()));
+    @PostMapping("/reset")
+    public ResponseEntity<Agent> getResetPassword(@RequestBody ResetPassword resetPassword) {
+        return ResponseEntity.ok(agentService.resetPassword(resetPassword));
     }
-
 }

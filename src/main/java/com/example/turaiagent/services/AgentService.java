@@ -1,9 +1,6 @@
 package com.example.turaiagent.services;
 
-import com.example.turaiagent.models.Agent;
-import com.example.turaiagent.models.AgentRequest;
-import com.example.turaiagent.models.Archive;
-import com.example.turaiagent.models.Offer;
+import com.example.turaiagent.models.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
@@ -21,5 +18,7 @@ public interface AgentService {
     Agent getFromToken() throws JsonProcessingException;
 
     List<AgentRequest> getOfferedRequestsByEmail(String email);
+
+    Agent resetPassword(ResetPassword resetPassword);
 
 }
