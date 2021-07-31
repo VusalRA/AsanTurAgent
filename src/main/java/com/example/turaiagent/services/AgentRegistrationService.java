@@ -1,9 +1,9 @@
 package com.example.turaiagent.services;
 
-import com.example.turaiagent.models.AppUser;
+import com.example.turaiagent.models.Agent;
 import com.example.turaiagent.registration.token.ConfirmationToken;
 import com.example.turaiagent.registration.token.ConfirmationTokenService;
-import com.example.turaiagent.repositories.AppUserRepository;
+import com.example.turaiagent.repositories.AgentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,61 +16,51 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class AppUserService implements UserDetailsService {
+public class AgentRegistrationService implements UserDetailsService {
 
     private final static String USER_NOT_FOUND_MSG =
             "user with email %s not found";
 
-    private final AppUserRepository appUserRepository;
+    private final AgentRepository agentRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
-
+    
     @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
-        return appUserRepository.findByEmail(email)
+        return agentRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException(
                                 String.format(USER_NOT_FOUND_MSG, email)));
     }
 
-    public String signUpUser(AppUser appUser) {
-        boolean userExists = appUserRepository
-                .findByEmail(appUser.getEmail())
+    public String signUpUser(Agent agent) {
+        boolean userExists = agentRepository
+                .findByEmail(agent.getEmail())
                 .isPresent();
-
         if (userExists) {
             // TODO check of attributes are the same and
             // TODO if email not confirmed send confirmation email.
-
             throw new IllegalStateException("email already taken");
         }
-
         String encodedPassword = bCryptPasswordEncoder
-                .encode(appUser.getPassword());
-
-        appUser.setPassword(encodedPassword);
-
-        appUserRepository.save(appUser);
-
+                .encode(agent.getPassword());
+        agent.setPassword(encodedPassword);
+        agentRepository.save(agent);
         String token = UUID.randomUUID().toString();
-
         ConfirmationToken confirmationToken = new ConfirmationToken(
                 token,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(15),
-                appUser
+                agent
         );
-
         confirmationTokenService.saveConfirmationToken(
                 confirmationToken);
-
 //        TODO: SEND EMAIL
-
         return token;
     }
 
     public int enableAppUser(String email) {
-        return appUserRepository.enableAppUser(email);
+        return agentRepository.enableAppUser(email);
     }
 }

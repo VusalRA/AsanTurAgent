@@ -1,6 +1,5 @@
 package com.example.turaiagent.services;
 
-import com.example.turaiagent.dtos.AppUserDto;
 import com.example.turaiagent.models.Agent;
 import com.example.turaiagent.models.AgentRequest;
 import com.example.turaiagent.models.Archive;
@@ -10,10 +9,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
 
 public interface AgentService {
-
-    AppUserDto registerUser(AppUserDto appUserDto);
-
-    Agent registerAgent(Agent agent);
 
     Archive moveToArchive(Long agentId, Long requestId);
 
@@ -26,7 +21,5 @@ public interface AgentService {
     Agent getFromToken() throws JsonProcessingException;
 
     List<AgentRequest> getOfferedRequestsByEmail(String email);
-
-//    List<Offer> getAcceptOffers();
 
 }

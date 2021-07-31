@@ -1,11 +1,11 @@
 package com.example.turaiagent.registration;
 
-import com.example.turaiagent.models.AppUser;
-import com.example.turaiagent.enums.AppUserRole;
-import com.example.turaiagent.services.AppUserService;
 import com.example.turaiagent.email.EmailSender;
+import com.example.turaiagent.enums.AppUserRole;
+import com.example.turaiagent.models.Agent;
 import com.example.turaiagent.registration.token.ConfirmationToken;
 import com.example.turaiagent.registration.token.ConfirmationTokenService;
+import com.example.turaiagent.services.AgentRegistrationService;
 import com.example.turaiagent.util.EmailValidator;
 import com.example.turaiagent.util.jwt.JwtTokenUtil;
 import lombok.AllArgsConstructor;
@@ -29,8 +29,8 @@ public class RegistrationService {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final JwtUserDetailsService userDetailsService;
+    private final AgentRegistrationService agentRegistrationService;
 
-    private final AppUserService appUserService;
     private final EmailValidator emailValidator;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
@@ -44,12 +44,13 @@ public class RegistrationService {
             throw new IllegalStateException("email not valid");
         }
 
-        String token = appUserService.signUpUser(
-                new AppUser(
+        String token = agentRegistrationService.signUpUser(
+                new Agent(
                         request.getFirstName(),
                         request.getLastName(),
                         request.getEmail(),
                         request.getPassword(),
+                        request.getCompanyName(),
                         AppUserRole.USER
                 )
         );
@@ -84,8 +85,8 @@ public class RegistrationService {
         }
 
         confirmationTokenService.setConfirmedAt(token);
-        appUserService.enableAppUser(
-                confirmationToken.getAppUser().getEmail());
+        agentRegistrationService.enableAppUser(
+                confirmationToken.getAgent().getEmail());
         return "confirmed";
     }
 

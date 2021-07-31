@@ -1,6 +1,6 @@
 package com.example.turaiagent.repositories;
 
-import com.example.turaiagent.models.AppUser;
+import com.example.turaiagent.models.Agent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,16 +12,16 @@ import java.util.Optional;
 @Repository
 @Transactional(readOnly = true)
 public interface AppUserRepository
-        extends JpaRepository<AppUser, Long> {
+        extends JpaRepository<Agent, Long> {
 
-    Optional<AppUser> findByEmail(String email);
+    Optional<Agent> findByEmail(String email);
 
     @Transactional
     @Modifying
-    @Query("UPDATE AppUser a " +
+    @Query("UPDATE Agent a " +
             "SET a.enabled = TRUE WHERE a.email = ?1")
     int enableAppUser(String email);
 
-    AppUser findUserByEmail(String email);
+    Agent findUserByEmail(String email);
 
 }

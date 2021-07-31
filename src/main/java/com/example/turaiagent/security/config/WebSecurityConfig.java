@@ -1,6 +1,6 @@
 package com.example.turaiagent.security.config;
 
-import com.example.turaiagent.services.AppUserService;
+import com.example.turaiagent.services.AgentRegistrationService;
 import com.example.turaiagent.util.jwt.JwtRequestFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtRequestFilter jwtRequestFilter;
-    private final AppUserService appUserService;
+    private final AgentRegistrationService agentRegistrationService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
@@ -71,7 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         DaoAuthenticationProvider provider =
                 new DaoAuthenticationProvider();
         provider.setPasswordEncoder(bCryptPasswordEncoder);
-        provider.setUserDetailsService(appUserService);
+        provider.setUserDetailsService(agentRegistrationService);
         return provider;
     }
 

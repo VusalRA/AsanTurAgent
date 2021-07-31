@@ -1,6 +1,5 @@
 package com.example.turaiagent.controllers;
 
-import com.example.turaiagent.dtos.AppUserDto;
 import com.example.turaiagent.models.AgentRequest;
 import com.example.turaiagent.models.Archive;
 import com.example.turaiagent.models.Offer;
@@ -26,10 +25,10 @@ public class AgentController {
 //        return ResponseEntity.ok(agentService.registerAgent(agent));
 //    }
 
-    @PostMapping("/register")
-    public ResponseEntity<AppUserDto> registerAgent(@RequestBody AppUserDto appUserDto) {
-        return ResponseEntity.ok(agentService.registerUser(appUserDto));
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<AppUserDto> registerAgent(@RequestBody AppUserDto appUserDto) {
+//        return ResponseEntity.ok(agentService.registerUser(appUserDto));
+//    }
 
     @GetMapping("/archive/{requestId}")
     public ResponseEntity<Archive> moveToArchive(@PathVariable Long requestId) throws JsonProcessingException {
@@ -50,11 +49,5 @@ public class AgentController {
     public ResponseEntity<Offer> getRequestOffer(@RequestBody Offer offer) throws JsonProcessingException {
         return ResponseEntity.ok(agentService.createOffer(offer, agentService.getFromToken().getId()));
     }
-
-
-//    @GetMapping
-//    public ResponseEntity<Offer> getAcceptOffers() {
-////        return ResponseEntity.ok(agentService.getAcceptOffers())
-//    }
 
 }

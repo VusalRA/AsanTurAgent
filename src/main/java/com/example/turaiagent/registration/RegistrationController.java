@@ -24,10 +24,8 @@ public class RegistrationController {
 
     @GetMapping("/confirm/{token}")
     public String confirm(@PathVariable String token) {
-        System.out.println("TEst");
         return registrationService.confirmToken(token);
     }
-
 
     @RequestMapping(value = "/authenticate/user", method = RequestMethod.POST)
     public ResponseEntity<String> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {

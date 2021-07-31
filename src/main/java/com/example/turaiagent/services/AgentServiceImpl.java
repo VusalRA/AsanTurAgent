@@ -1,10 +1,8 @@
 package com.example.turaiagent.services;
 
 import com.example.turaiagent.configs.RabbitConfig;
-import com.example.turaiagent.dtos.AppUserDto;
 import com.example.turaiagent.dtos.OfferDto;
 import com.example.turaiagent.dtos.RequestDto;
-import com.example.turaiagent.enums.AppUserRole;
 import com.example.turaiagent.enums.Status;
 import com.example.turaiagent.models.*;
 import com.example.turaiagent.repositories.*;
@@ -54,34 +52,17 @@ public class AgentServiceImpl implements AgentService {
     List<Offer> list = new ArrayList<>();
 
     AgentRepository agentRepo;
-    AppUserRepository appUserRepo;
     RequestRepository requestRepo;
     AgentRequestRepository agentRequestRepo;
     ArchiveRepository archiveRepo;
     OfferRepository offerRepo;
 
-    public AgentServiceImpl(AgentRepository agentRepo, AppUserRepository appUserRepo, RequestRepository requestRepo, AgentRequestRepository agentRequestRepo, ArchiveRepository archiveRepo, OfferRepository offerRepo) {
+    public AgentServiceImpl(AgentRepository agentRepo, RequestRepository requestRepo, AgentRequestRepository agentRequestRepo, ArchiveRepository archiveRepo, OfferRepository offerRepo) {
         this.agentRepo = agentRepo;
-        this.appUserRepo = appUserRepo;
         this.requestRepo = requestRepo;
         this.agentRequestRepo = agentRequestRepo;
         this.archiveRepo = archiveRepo;
         this.offerRepo = offerRepo;
-    }
-
-    @Override
-    public AppUserDto registerUser(AppUserDto appUserDto) {
-        AppUser appUser = AppUser.builder().appUserRole(AppUserRole.USER)
-                .companyName(appUserDto.getCompanyName()).firstName(appUserDto.getFirstName())
-                .lastName(appUserDto.getLastName()).email(appUserDto.getEmail()).enabled(false)
-                .locked(false).build();
-        appUserRepo.save(appUser);
-        return appUserDto;
-    }
-
-    @Override
-    public Agent registerAgent(Agent agent) {
-        return agentRepo.save(agent);
     }
 
     @Override
@@ -106,7 +87,7 @@ public class AgentServiceImpl implements AgentService {
     }
 
     public List<AgentRequest> getOfferedRequestsByEmail(String email) {
-        Agent agent = agentRepo.findByEmail(email);
+        Agent agent = agentRepo.findUserByEmail(email);
         return agentRequestRepo.findAllByAgentId(agent.getId());
     }
 
@@ -120,13 +101,9 @@ public class AgentServiceImpl implements AgentService {
         File file = Paths.get(res.toURI()).toFile();
 
         Offer offer = offerRepo.findById(offerId).get();
-
         list.add(offer);
-
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
-
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
-
         Map<String, Object> map = new HashMap<>();
         map.put("createdBy", "Vusal");
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource);
@@ -187,7 +164,6 @@ public class AgentServiceImpl implements AgentService {
 
     @Override
     public Agent getFromToken() {
-
         String tokenes = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader("Authorization");
         String token = tokenes.substring(7, tokenes.length());
         String[] chunks = token.split("\\.");
@@ -206,13 +182,13 @@ public class AgentServiceImpl implements AgentService {
         }
         String email = jsonNode.get("sub").asText();
 
-        return agentRepo.findByEmail(email);
+        return agentRepo.findUserByEmail(email);
     }
 
     @RabbitListener(queues = "accept_queue")
     public void listenAccept(Accept accept) throws JsonProcessingException {
         Request request = requestRepo.findByUuid(accept.getUuid());
-        Agent agent = agentRepo.findByEmail(accept.getEmail());
+        Agent agent = agentRepo.findUserByEmail(accept.getEmail());
 
         System.out.println(accept.getEmail());
         AgentRequest agentRequest = agentRequestRepo.findByAgentIdAndRequestId(agent.getId(), request.getId());
@@ -229,11 +205,15 @@ public class AgentServiceImpl implements AgentService {
         String java = objectMapper.writeValueAsString(requestDto.getData());
         Request request = Request.builder().uuid(requestDto.getUuid()).data(java).requestDateTime(LocalDateTime.now()).requestEndDateTime(endDate(LocalTime.from(LocalDateTime.now()))).build();
         requestRepo.save(request);
-        List<Agent> agentList = agentRepo.findAll();
-        agentList.forEach(agent -> agentRequestRepo
-                .save(AgentRequest.builder()
-                        .agentId(agent.getId()).requestId(request.getId())
-                        .status(Status.NEW_REQUEST.name()).build()));
+        List<Agent> agents = agentRepo.findAll();
+        agents.forEach(appUser -> agentRequestRepo.save(AgentRequest.builder()
+                .agentId(appUser.getId()).requestId(request.getId())
+                .status(Status.NEW_REQUEST.name()).build()));
+//        List<Agent> agentList = agentRepo.findAll();
+//        agentList.forEach(agent -> agentRequestRepo
+//                .save(AgentRequest.builder()
+//                        .agentId(agent.getId()).requestId(request.getId())
+//                        .status(Status.NEW_REQUEST.name()).build()));
     }
 
 

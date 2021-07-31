@@ -1,6 +1,6 @@
 package com.example.turaiagent.registration.token;
 
-import com.example.turaiagent.models.AppUser;
+import com.example.turaiagent.models.Agent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,17 +40,17 @@ public class ConfirmationToken {
     @ManyToOne
     @JoinColumn(
             nullable = false,
-            name = "app_user_id"
+            name = "agent_id"
     )
-    private AppUser appUser;
+    private Agent agent;
 
     public ConfirmationToken(String token,
                              LocalDateTime createdAt,
                              LocalDateTime expiresAt,
-                             AppUser appUser) {
+                             Agent agent) {
         this.token = token;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
-        this.appUser = appUser;
+        this.agent = agent;
     }
 }
