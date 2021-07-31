@@ -1,6 +1,6 @@
 package com.example.turaiagent.security.config;
 
-import com.example.turaiagent.appuser.AppUserService;
+import com.example.turaiagent.services.AppUserService;
 import com.example.turaiagent.util.jwt.JwtRequestFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -1,7 +1,7 @@
 package com.example.turaiagent.registration;
 
-import com.example.turaiagent.appuser.AppUser;
-import com.example.turaiagent.appuser.AppUserRepository;
+import com.example.turaiagent.models.AppUser;
+import com.example.turaiagent.repositories.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

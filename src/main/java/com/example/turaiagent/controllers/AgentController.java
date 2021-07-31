@@ -1,6 +1,6 @@
 package com.example.turaiagent.controllers;
 
-import com.example.turaiagent.models.Agent;
+import com.example.turaiagent.dtos.AppUserDto;
 import com.example.turaiagent.models.AgentRequest;
 import com.example.turaiagent.models.Archive;
 import com.example.turaiagent.models.Offer;
@@ -8,8 +8,6 @@ import com.example.turaiagent.services.AgentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 
@@ -23,34 +21,40 @@ public class AgentController {
         this.agentService = agentService;
     }
 
+//    @PostMapping("/register")
+//    public ResponseEntity<Agent> registerAgent(@RequestBody Agent agent) {
+//        return ResponseEntity.ok(agentService.registerAgent(agent));
+//    }
+
     @PostMapping("/register")
-    public ResponseEntity<Agent> registerAgent(@RequestBody Agent agent) {
-        return ResponseEntity.ok(agentService.registerAgent(agent));
+    public ResponseEntity<AppUserDto> registerAgent(@RequestBody AppUserDto appUserDto) {
+        return ResponseEntity.ok(agentService.registerUser(appUserDto));
     }
 
-    @GetMapping("/archive/{agentId}/{requestId}")
-    public ResponseEntity<Archive> moveToArchive(@PathVariable Long agentId, @PathVariable Long requestId) {
-        return ResponseEntity.ok(agentService.moveToArchive(agentId, requestId));
+    @GetMapping("/archive/{requestId}")
+    public ResponseEntity<Archive> moveToArchive(@PathVariable Long requestId) throws JsonProcessingException {
+        return ResponseEntity.ok(agentService.moveToArchive(agentService.getFromToken().getId(), requestId));
     }
 
-    @GetMapping("/archive/{agentId}")
-    public ResponseEntity<List<Archive>> findAllByAgentId(@PathVariable Long agentId) {
-        return ResponseEntity.ok(agentService.getArchiveList(agentId));
+    @GetMapping("/archive")
+    public ResponseEntity<List<Archive>> findAllByAgentId() throws JsonProcessingException {
+        return ResponseEntity.ok(agentService.getArchiveList(agentService.getFromToken().getId()));
     }
 
-    //    @GetMapping("/offered/{agentId}")
     @GetMapping("/offered")
     public ResponseEntity<List<AgentRequest>> getOfferedRequests() throws JsonProcessingException {
-        String i = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader("Authorization");
-//        String s = agentService.getFromToken(i);
-        String s = agentService.getFromToken(i.substring(7, i.length()));
-        System.out.println(s);
-
-        return ResponseEntity.ok(agentService.getOfferedRequestsByEmail(s));
+        return ResponseEntity.ok(agentService.getOfferedRequestsByEmail(agentService.getFromToken().getEmail()));
     }
 
-    @PostMapping("/offered/{agentId}")
-    public ResponseEntity<Offer> getRequestOffer(@PathVariable Long agentId, @RequestBody Offer offer) {
-        return ResponseEntity.ok(agentService.createOffer(offer, agentId));
+    @PostMapping("/offered")
+    public ResponseEntity<Offer> getRequestOffer(@RequestBody Offer offer) throws JsonProcessingException {
+        return ResponseEntity.ok(agentService.createOffer(offer, agentService.getFromToken().getId()));
     }
+
+
+//    @GetMapping
+//    public ResponseEntity<Offer> getAcceptOffers() {
+////        return ResponseEntity.ok(agentService.getAcceptOffers())
+//    }
+
 }

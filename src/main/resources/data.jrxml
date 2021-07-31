@@ -7,6 +7,7 @@
               topMargin="20" bottomMargin="20" uuid="13acf49e-4913-4d1b-bccc-113817ad15d1">
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+    <property name="background.image.path" value="C:\Users\Abdullayev\Desktop\TurAIAgent\src\main\resources\back.jpg"/>
     <style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false"/>
     <style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false"/>
     <style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true"/>
@@ -178,7 +179,7 @@
     <title>
         <band height="132" splitType="Stretch">
             <frame>
-                <reportElement mode="Opaque" x="0" y="0" width="451" height="95" backcolor="#000000"
+                <reportElement mode="Opaque" x="0" y="0" width="555" height="95" backcolor="#000000"
                                uuid="6c6ca4e1-17cd-4913-93d6-5e670ea9ae8a"/>
                 <staticText>
                     <reportElement style="Title" x="0" y="0" width="370" height="66"
@@ -198,10 +199,10 @@
                 </staticText>
             </frame>
             <frame>
-                <reportElement mode="Opaque" x="0" y="100" width="451" height="32" forecolor="#000000"
+                <reportElement mode="Opaque" x="0" y="100" width="555" height="32" forecolor="#000000"
                                backcolor="#CC0000" uuid="e3c14156-5b51-4201-918b-97fdc012e5d4"/>
                 <textField pattern="EEEEE dd MMMMM yyyy">
-                    <reportElement x="307" y="12" width="144" height="20" forecolor="#FFFFFF"
+                    <reportElement x="411" y="10" width="144" height="20" forecolor="#FFFFFF"
                                    uuid="5c3301e7-a737-4c59-8a2f-a6c79fd1adb8"/>
                     <textElement textAlignment="Right">
                         <font size="12"/>
@@ -209,10 +210,6 @@
                     <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
                 </textField>
             </frame>
-            <image>
-                <reportElement x="451" y="0" width="104" height="132" uuid="d181c562-4b94-4e6a-9e3f-d0317691ad3b"/>
-                <imageExpression><![CDATA[this.getClass().getResourceAsStream("//image.jpg")]]></imageExpression>
-            </image>
         </band>
     </title>
     <pageHeader>
@@ -226,6 +223,14 @@
             <frame>
                 <reportElement style="Row" mode="Opaque" x="0" y="0" width="555" height="18"
                                uuid="b50221b5-8254-440b-8c6f-1f0b138c9259"/>
+                <frame>
+                    <reportElement x="30" y="-418" width="468" height="469"
+                                   uuid="7c0c3fd9-2872-4d0b-8d08-f308e2f6f2eb"/>
+                    <!--                    <image>-->
+                    <!--                        <reportElement x="0" y="0" width="468" height="469" uuid="e90ec87f-8b71-45ac-a796-ffe0edcbaa34"/>-->
+                    <!--                        <imageExpression><![CDATA["C:\\Users\\Abdullayev\\Desktop\\TurAIAgent\\src\\main\\resources\\back.jpg"]]></imageExpression>-->
+                    <!--                    </image>-->
+                </frame>
             </frame>
         </band>
     </detail>

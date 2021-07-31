@@ -1,9 +1,7 @@
-package com.example.turaiagent.appuser;
+package com.example.turaiagent.models;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.turaiagent.enums.AppUserRole;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,24 +13,28 @@ import java.util.Collections;
 @Getter
 @Setter
 @EqualsAndHashCode
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 public class AppUser implements UserDetails {
 
     @SequenceGenerator(
-            name = "student_sequence",
+            name = "appuser_sequence",
             sequenceName = "student_sequence",
             allocationSize = 1
     )
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "student_sequence"
+            generator = "appuser_sequence"
     )
     private Long id;
     private String firstName;
     private String lastName;
     private String email;
+    @Column(name = "company_name")
+    private String companyName;
     private String password;
     @Enumerated(EnumType.STRING)
     private AppUserRole appUserRole;

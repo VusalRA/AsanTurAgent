@@ -1,5 +1,6 @@
-package com.example.turaiagent.appuser;
+package com.example.turaiagent.repositories;
 
+import com.example.turaiagent.models.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

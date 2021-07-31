@@ -1,6 +1,6 @@
 package com.example.turaiagent.registration.token;
 
-import com.example.turaiagent.appuser.AppUser;
+import com.example.turaiagent.models.AppUser;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

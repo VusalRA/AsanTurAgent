@@ -1,8 +1,8 @@
 package com.example.turaiagent.registration;
 
-import com.example.turaiagent.appuser.AppUser;
-import com.example.turaiagent.appuser.AppUserRole;
-import com.example.turaiagent.appuser.AppUserService;
+import com.example.turaiagent.models.AppUser;
+import com.example.turaiagent.enums.AppUserRole;
+import com.example.turaiagent.services.AppUserService;
 import com.example.turaiagent.email.EmailSender;
 import com.example.turaiagent.registration.token.ConfirmationToken;
 import com.example.turaiagent.registration.token.ConfirmationTokenService;

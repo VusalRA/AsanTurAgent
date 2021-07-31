@@ -1,8 +1,10 @@
 package com.example.turaiagent.services;
 
 import com.example.turaiagent.configs.RabbitConfig;
+import com.example.turaiagent.dtos.AppUserDto;
 import com.example.turaiagent.dtos.OfferDto;
 import com.example.turaiagent.dtos.RequestDto;
+import com.example.turaiagent.enums.AppUserRole;
 import com.example.turaiagent.enums.Status;
 import com.example.turaiagent.models.*;
 import com.example.turaiagent.repositories.*;
@@ -16,6 +18,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -50,17 +54,29 @@ public class AgentServiceImpl implements AgentService {
     List<Offer> list = new ArrayList<>();
 
     AgentRepository agentRepo;
+    AppUserRepository appUserRepo;
     RequestRepository requestRepo;
     AgentRequestRepository agentRequestRepo;
     ArchiveRepository archiveRepo;
     OfferRepository offerRepo;
 
-    public AgentServiceImpl(AgentRepository agentRepo, RequestRepository requestRepo, AgentRequestRepository agentRequestRepo, ArchiveRepository archiveRepo, OfferRepository offerRepo) {
+    public AgentServiceImpl(AgentRepository agentRepo, AppUserRepository appUserRepo, RequestRepository requestRepo, AgentRequestRepository agentRequestRepo, ArchiveRepository archiveRepo, OfferRepository offerRepo) {
         this.agentRepo = agentRepo;
+        this.appUserRepo = appUserRepo;
         this.requestRepo = requestRepo;
         this.agentRequestRepo = agentRequestRepo;
         this.archiveRepo = archiveRepo;
         this.offerRepo = offerRepo;
+    }
+
+    @Override
+    public AppUserDto registerUser(AppUserDto appUserDto) {
+        AppUser appUser = AppUser.builder().appUserRole(AppUserRole.USER)
+                .companyName(appUserDto.getCompanyName()).firstName(appUserDto.getFirstName())
+                .lastName(appUserDto.getLastName()).email(appUserDto.getEmail()).enabled(false)
+                .locked(false).build();
+        appUserRepo.save(appUser);
+        return appUserDto;
     }
 
     @Override
@@ -93,6 +109,11 @@ public class AgentServiceImpl implements AgentService {
         Agent agent = agentRepo.findByEmail(email);
         return agentRequestRepo.findAllByAgentId(agent.getId());
     }
+
+//    @Override
+//    public List<Offer> getAcceptOffers() {
+//
+//    }
 
     public String createJpg(Long offerId) throws URISyntaxException, JRException {
         URL res = getClass().getClassLoader().getResource("data.jrxml");
@@ -165,7 +186,10 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
-    public String getFromToken(String token) throws JsonProcessingException {
+    public Agent getFromToken() {
+
+        String tokenes = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader("Authorization");
+        String token = tokenes.substring(7, tokenes.length());
         String[] chunks = token.split("\\.");
         Base64.Decoder decoder = Base64.getDecoder();
 
@@ -173,10 +197,16 @@ public class AgentServiceImpl implements AgentService {
         String payload = new String(decoder.decode(chunks[1]));
 
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readValue(payload, JsonNode.class);
-        String s = jsonNode.get("sub").asText();
 
-        return s;
+        JsonNode jsonNode = null;
+        try {
+            jsonNode = objectMapper.readValue(payload, JsonNode.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        String email = jsonNode.get("sub").asText();
+
+        return agentRepo.findByEmail(email);
     }
 
     @RabbitListener(queues = "accept_queue")

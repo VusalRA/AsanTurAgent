@@ -1,7 +1,9 @@
-package com.example.turaiagent.appuser;
+package com.example.turaiagent.services;
 
+import com.example.turaiagent.models.AppUser;
 import com.example.turaiagent.registration.token.ConfirmationToken;
 import com.example.turaiagent.registration.token.ConfirmationTokenService;
+import com.example.turaiagent.repositories.AppUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

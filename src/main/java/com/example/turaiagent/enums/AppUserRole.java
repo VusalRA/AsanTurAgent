@@ -1,4 +1,4 @@
-package com.example.turaiagent.appuser;
+package com.example.turaiagent.enums;
 
 public enum AppUserRole {
     USER,
