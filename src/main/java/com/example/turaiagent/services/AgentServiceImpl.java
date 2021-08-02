@@ -17,6 +17,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -152,6 +153,24 @@ public class AgentServiceImpl implements AgentService {
         AgentRequest agentRequest = agentRequestRepo.findByRequest(request);
         agentRequest.setStatus(Status.EXPIRED.name());
         agentRequestRepo.save(agentRequest);
+
+    }
+
+
+    @Scheduled(cron = "0 0/1 * * * ?")
+    @Override
+    public void checkRequestEndTime() {
+        List<Request> requests = requestRepo.findAll();
+        System.out.println(requests.size());
+        requests.forEach(request -> {
+            if (LocalDateTime.now().isBefore(request.getRequestEndDateTime())) {
+                System.out.println("Inside");
+                AgentRequest agentRequest = agentRequestRepo.findByRequest(request);
+                agentRequest.setStatus(Status.EXPIRED.name());
+                agentRequestRepo.save(agentRequest);
+            }
+        });
+
 
     }
 

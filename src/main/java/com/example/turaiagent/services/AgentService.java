@@ -38,4 +38,6 @@ public interface AgentService {
 
     void stopRequest(StopDto stopDto);
 
+    void checkRequestEndTime();
+
 }
