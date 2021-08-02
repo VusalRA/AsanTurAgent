@@ -18,10 +18,13 @@ public class AgentRequest {
     private Long id;
     @Column(name = "agent_id")
     private Long agentId;
-    @Column(name = "request_id")
-    private Long requestId;
+    //    @Column(name = "request_id")
+//    private Long requestId;
     private String status;
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    @ManyToOne(targetEntity = Request.class)
+    private Request request;
 
 }

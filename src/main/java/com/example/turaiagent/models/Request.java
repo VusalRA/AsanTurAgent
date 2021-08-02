@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,4 +25,8 @@ public class Request {
     private LocalDateTime requestDateTime;
     @Column(name = "request_end_date_time")
     private LocalDateTime requestEndDateTime;
+
+    @OneToMany
+    @JoinColumn(name = "agent_id") // we need to duplicate the physical information
+    private List<Agent> agents;
 }

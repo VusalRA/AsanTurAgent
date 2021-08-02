@@ -23,7 +23,7 @@ public class Archive {
 
     public Archive(AgentRequest agentRequest) {
         this.agentId = agentRequest.getAgentId();
-        this.requestId = agentRequest.getRequestId();
+//        this.requestId = agentRequest.getRequestId();
         this.status = agentRequest.getStatus();
     }
 }

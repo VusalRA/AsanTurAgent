@@ -23,6 +23,11 @@ public class AgentController {
         this.agentService = agentService;
     }
 
+    @GetMapping("/requests")
+    public ResponseEntity<List<AgentRequest>> getRequests() throws JsonProcessingException {
+        return ResponseEntity.ok(agentService.getRequests(agentService.getFromToken().getId()));
+    }
+
     @GetMapping("/archive/{requestId}")
     public ResponseEntity<Archive> moveToArchive(@PathVariable Long requestId) throws JsonProcessingException {
         return ResponseEntity.ok(agentService.moveToArchive(agentService.getFromToken().getId(), requestId));

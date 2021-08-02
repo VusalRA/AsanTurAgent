@@ -1,10 +1,7 @@
 package com.example.turaiagent.services;
 
 import com.example.turaiagent.configs.RabbitConfig;
-import com.example.turaiagent.dtos.AcceptDto;
-import com.example.turaiagent.dtos.OfferDto;
-import com.example.turaiagent.dtos.RequestDto;
-import com.example.turaiagent.dtos.ResetPasswordDto;
+import com.example.turaiagent.dtos.*;
 import com.example.turaiagent.enums.Status;
 import com.example.turaiagent.models.*;
 import com.example.turaiagent.registration.token.ConfirmationToken;
@@ -84,6 +81,12 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
+    public List<AgentRequest> getRequests(Long agentId) {
+        System.out.println(agentRequestRepo.findAllByAgentIdWithout(agentId).size());
+        return agentRequestRepo.findAllByAgentIdWithout(agentId);
+    }
+
+    @Override
     public Archive moveToArchive(Long agentId, Long requestId) {
         AgentRequest agentRequest = agentRequestRepo.findByAgentIdAndRequestId(agentId, requestId);
         if (agentRequest.getStatus().equals(Status.NEW_REQUEST.name())) {
@@ -141,18 +144,17 @@ public class AgentServiceImpl implements AgentService {
         return agentRepo.findUserByEmail(email);
     }
 
-    public void changePassword(String newPassword, Agent agent) {
-        System.out.println("NEW PASSWORD: " + newPassword);
-//        System.out.println("AGENT EMAIL: " + agent.getCompanyName());
-//        Agent agent = agentRepo.findUserByEmail(email);
-        agent.setPassword(bCryptPasswordEncoder.encode(newPassword));
-        agentRepo.save(agent);
+    @RabbitListener(queues = RabbitConfig.QUEUE4)
+    @Override
+    public void stopRequest(StopDto stopDto) {
+
+        Request request = requestRepo.findByUuid(stopDto.getUuid());
+        AgentRequest agentRequest = agentRequestRepo.findByRequest(request);
+        agentRequest.setStatus(Status.EXPIRED.name());
+        agentRequestRepo.save(agentRequest);
+
     }
 
-    public String confirm(Integer password) {
-        ForgotPassword forgotPassword = forgotPasswordRepository.findByRandom(password).orElseThrow(() -> new IllegalStateException("random not found"));
-        return forgotPassword.getEmail();
-    }
 
     @Transactional
     public String confirmToken(String token) {
@@ -291,9 +293,15 @@ public class AgentServiceImpl implements AgentService {
         Request request = Request.builder().uuid(requestDto.getUuid()).data(java).requestDateTime(LocalDateTime.now()).requestEndDateTime(endDate(LocalTime.from(LocalDateTime.now()))).build();
         requestRepo.save(request);
         List<Agent> agents = agentRepo.findAll();
+
+//        agents.forEach(appUser -> agentRequestRepo.save(AgentRequest.builder()
+//                .agentId(appUser.getId()).requestId(request.getId())
+//                .status(Status.NEW_REQUEST.name()).build()));
+
         agents.forEach(appUser -> agentRequestRepo.save(AgentRequest.builder()
-                .agentId(appUser.getId()).requestId(request.getId())
+                .agentId(appUser.getId()).request(request)
                 .status(Status.NEW_REQUEST.name()).build()));
+
 //        List<Agent> agentList = agentRepo.findAll();
 //        agentList.forEach(agent -> agentRequestRepo
 //                .save(AgentRequest.builder()
@@ -341,6 +349,17 @@ public class AgentServiceImpl implements AgentService {
             }
             return requestDeadline;
         }
+    }
+
+    public void changePassword(String newPassword, Agent agent) {
+        System.out.println("NEW PASSWORD: " + newPassword);
+        agent.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        agentRepo.save(agent);
+    }
+
+    public String confirm(Integer password) {
+        ForgotPassword forgotPassword = forgotPasswordRepository.findByRandom(password).orElseThrow(() -> new IllegalStateException("random not found"));
+        return forgotPassword.getEmail();
     }
 
 
