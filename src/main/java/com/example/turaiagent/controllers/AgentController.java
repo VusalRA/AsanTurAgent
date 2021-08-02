@@ -1,5 +1,6 @@
 package com.example.turaiagent.controllers;
 
+import com.example.turaiagent.dtos.NewPassword;
 import com.example.turaiagent.dtos.ResetPasswordDto;
 import com.example.turaiagent.models.Agent;
 import com.example.turaiagent.models.AgentRequest;
@@ -46,4 +47,28 @@ public class AgentController {
     public ResponseEntity<Agent> getResetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
         return ResponseEntity.ok(agentService.resetPassword(resetPasswordDto));
     }
+
+    @GetMapping("/forgot/{email}")
+    public void forgotPassword(@PathVariable String email) {
+        agentService.forgotPassword(email);
+    }
+
+//    @GetMapping("/forgot/confirm/{token}")
+//    public String forgotConfirm(@PathVariable String token) {
+//        return agentService.confirmToken(token);
+//    }
+//
+
+    @PostMapping("/forgot/{password}")
+    public String forgotPasswordConfirm(@PathVariable Integer password, @RequestBody NewPassword newPassword) {
+        System.out.println("FORGOT: " + agentService.confirm(password));
+
+        Agent agent = agentService.findAgent(agentService.confirm(password));
+
+        System.out.println(agent.getEmail());
+        agentService.changePassword(newPassword.getPassword(), agent);
+        return "Changed";
+    }
+
+
 }

@@ -24,9 +24,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RegistrationService {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
-
     private final JwtTokenUtil jwtTokenUtil;
     private final JwtUserDetailsService userDetailsService;
     private final AgentRegistrationService agentRegistrationService;
@@ -34,7 +31,7 @@ public class RegistrationService {
     private final EmailValidator emailValidator;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
-
+    private final AuthenticationManager authenticationManager;
 
     public String register(RegistrationRequest request) {
         boolean isValidEmail = emailValidator.

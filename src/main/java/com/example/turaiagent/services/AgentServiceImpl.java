@@ -7,7 +7,10 @@ import com.example.turaiagent.dtos.RequestDto;
 import com.example.turaiagent.dtos.ResetPasswordDto;
 import com.example.turaiagent.enums.Status;
 import com.example.turaiagent.models.*;
+import com.example.turaiagent.registration.token.ConfirmationToken;
+import com.example.turaiagent.registration.token.ConfirmationTokenService;
 import com.example.turaiagent.repositories.*;
+import com.example.turaiagent.services.email.EmailService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +26,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.imageio.ImageIO;
+import javax.transaction.Transactional;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,6 +47,12 @@ public class AgentServiceImpl implements AgentService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private ForgotPasswordRepository forgotPasswordRepository;
+
+    @Autowired
     RabbitTemplate rabbitTemplate;
 
     @Value("${start.time}")
@@ -61,14 +71,16 @@ public class AgentServiceImpl implements AgentService {
     AgentRequestRepository agentRequestRepo;
     ArchiveRepository archiveRepo;
     OfferRepository offerRepo;
+    ConfirmationTokenService confirmationTokenService;
 
-    public AgentServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, AgentRepository agentRepo, RequestRepository requestRepo, AgentRequestRepository agentRequestRepo, ArchiveRepository archiveRepo, OfferRepository offerRepo) {
+    public AgentServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, AgentRepository agentRepo, RequestRepository requestRepo, AgentRequestRepository agentRequestRepo, ArchiveRepository archiveRepo, OfferRepository offerRepo, ConfirmationTokenService confirmationTokenService) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.agentRepo = agentRepo;
         this.requestRepo = requestRepo;
         this.agentRequestRepo = agentRequestRepo;
         this.archiveRepo = archiveRepo;
         this.offerRepo = offerRepo;
+        this.confirmationTokenService = confirmationTokenService;
     }
 
     @Override
@@ -106,6 +118,62 @@ public class AgentServiceImpl implements AgentService {
             System.out.println(agent.getPassword());
         }
         return agentRepo.save(agent);
+    }
+
+    @Override
+    public Agent forgotPassword(String email) {
+
+        if (!agentRepo.findByEmail(email).isPresent()) {
+            throw new IllegalStateException("Email not found");
+        } else {
+            System.out.println("We found it.");
+        }
+
+        int random = new Random().nextInt(900000) + 100000;
+        ForgotPassword forgotPassword = new ForgotPassword(email, random);
+        forgotPasswordRepository.save(forgotPassword);
+
+        emailService.send(email, String.valueOf(forgotPassword.getRandom()));
+        return agentRepo.findUserByEmail(email);
+    }
+
+    public Agent findAgent(String email) {
+        return agentRepo.findUserByEmail(email);
+    }
+
+    public void changePassword(String newPassword, Agent agent) {
+        System.out.println("NEW PASSWORD: " + newPassword);
+//        System.out.println("AGENT EMAIL: " + agent.getCompanyName());
+//        Agent agent = agentRepo.findUserByEmail(email);
+        agent.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        agentRepo.save(agent);
+    }
+
+    public String confirm(Integer password) {
+        ForgotPassword forgotPassword = forgotPasswordRepository.findByRandom(password).orElseThrow(() -> new IllegalStateException("random not found"));
+        return forgotPassword.getEmail();
+    }
+
+    @Transactional
+    public String confirmToken(String token) {
+        ConfirmationToken confirmationToken = confirmationTokenService
+                .getToken(token)
+                .orElseThrow(() ->
+                        new IllegalStateException("token not found"));
+
+        if (confirmationToken.getConfirmedAt() != null) {
+            throw new IllegalStateException("email already confirmed");
+        }
+
+        LocalDateTime expiredAt = confirmationToken.getExpiresAt();
+
+        if (expiredAt.isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("token expired");
+        }
+
+        confirmationTokenService.setConfirmedAt(token);
+
+        return "confirmed";
     }
 
     public String createJpg(Long offerId) throws URISyntaxException, JRException {
