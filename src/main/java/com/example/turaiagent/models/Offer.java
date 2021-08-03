@@ -23,6 +23,7 @@ public class Offer {
     private String email;
     private Double price;
     private String dateRange;
-    private String additionalInfo;
+    private String description;
+    private String notes;
 
 }

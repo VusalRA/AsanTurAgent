@@ -17,7 +17,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -157,7 +156,7 @@ public class AgentServiceImpl implements AgentService {
     }
 
 
-//    @Scheduled(cron = "0 0/1 * * * ?")
+    //    @Scheduled(cron = "0 0/1 * * * ?")
     @Override
     public void checkRequestEndTime() {
         List<Request> requests = requestRepo.findAll();
@@ -202,6 +201,7 @@ public class AgentServiceImpl implements AgentService {
         File file = Paths.get(res.toURI()).toFile();
 
         Offer offer = offerRepo.findById(offerId).get();
+        System.out.println("NOTES JPG: "+offer.getNotes());
         list.add(offer);
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
@@ -245,6 +245,7 @@ public class AgentServiceImpl implements AgentService {
 
     @Override
     public Offer createOffer(Offer offer, Long agentId) {
+        System.out.println("NOTE: " + offer.getNotes());
         Agent agent = agentRepo.findById(agentId).get();
         offer.setEmail(agent.getEmail());
         offer.setCompanyName(agent.getCompanyName());
