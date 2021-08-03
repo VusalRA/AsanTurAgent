@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="jasper3" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20"
-              topMargin="20" bottomMargin="20" uuid="13acf49e-4913-4d1b-bccc-113817ad15d1">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="jasper3" pageWidth="420" pageHeight="595" columnWidth="380" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="13acf49e-4913-4d1b-bccc-113817ad15d1">
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
-    <property name="background.image.path" value="C:\Users\Abdullayev\Desktop\TurAIAgent\src\main\resources\back.jpg"/>
     <style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false"/>
     <style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false"/>
     <style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true"/>
@@ -26,31 +21,10 @@
     <group name="Group1">
         <groupExpression><![CDATA[$F{id}]]></groupExpression>
         <groupHeader>
-            <band height="37">
-                <frame>
-                    <reportElement mode="Opaque" x="0" y="7" width="555" height="24" forecolor="#B89F7D"
-                                   backcolor="#000000" uuid="0a5fc4ac-2e39-4b7a-8f96-59f8eb2df66d"/>
-                    <staticText>
-                        <reportElement mode="Opaque" x="5" y="4" width="100" height="20" forecolor="#FFFFFF"
-                                       backcolor="#141313" uuid="e9a9fdc1-afba-42d6-b1ba-7478c1a0d353"/>
-                        <textElement>
-                            <font size="12"/>
-                        </textElement>
-                        <text><![CDATA[ID]]></text>
-                    </staticText>
-                    <textField textAdjust="StretchHeight">
-                        <reportElement style="SubTitle" isPrintRepeatedValues="false" x="210" y="0" width="258"
-                                       height="24" forecolor="#FFFFFF" uuid="4fbebfd3-a184-45af-b7d9-5c3faaf087b5"/>
-                        <textElement>
-                            <font isBold="false"/>
-                        </textElement>
-                        <textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
-                    </textField>
-                </frame>
-            </band>
+            <band height="37"/>
         </groupHeader>
         <groupFooter>
-            <band height="6"/>
+            <band height="28"/>
         </groupFooter>
     </group>
     <group name="Group2">
@@ -58,19 +32,16 @@
         <groupHeader>
             <band height="37">
                 <frame>
-                    <reportElement mode="Opaque" x="0" y="7" width="555" height="24" forecolor="#B89F7D"
-                                   backcolor="#000000" uuid="0a5fc4ac-2e39-4b7a-8f96-59f8eb2df66d"/>
+                    <reportElement mode="Opaque" x="0" y="-50" width="390" height="24" forecolor="#B89F7D" backcolor="#FCFEFF" uuid="0a5fc4ac-2e39-4b7a-8f96-59f8eb2df66d"/>
                     <staticText>
-                        <reportElement mode="Opaque" x="5" y="2" width="100" height="20" forecolor="#FFFFFF"
-                                       backcolor="#141313" uuid="6b367cb6-0fe0-4404-9d61-b889303a3214"/>
+                        <reportElement mode="Opaque" x="5" y="2" width="100" height="20" forecolor="#065673" backcolor="#FCFEFF" uuid="6b367cb6-0fe0-4404-9d61-b889303a3214"/>
                         <textElement>
                             <font size="12"/>
                         </textElement>
                         <text><![CDATA[Company Name]]></text>
                     </staticText>
                     <textField textAdjust="StretchHeight">
-                        <reportElement style="SubTitle" isPrintRepeatedValues="false" x="210" y="0" width="295"
-                                       height="24" forecolor="#FFFFFF" uuid="4fbebfd3-a184-45af-b7d9-5c3faaf087b5"/>
+                        <reportElement style="SubTitle" isPrintRepeatedValues="false" x="110" y="0" width="280" height="24" forecolor="#065673" backcolor="#065673" uuid="4fbebfd3-a184-45af-b7d9-5c3faaf087b5"/>
                         <textElement>
                             <font isBold="false"/>
                         </textElement>
@@ -88,19 +59,16 @@
         <groupHeader>
             <band height="37">
                 <frame>
-                    <reportElement mode="Opaque" x="0" y="7" width="555" height="24" forecolor="#B89F7D"
-                                   backcolor="#000000" uuid="0a5fc4ac-2e39-4b7a-8f96-59f8eb2df66d"/>
+                    <reportElement mode="Opaque" x="0" y="-50" width="390" height="24" forecolor="#B89F7D" backcolor="#FAFAFA" uuid="0a5fc4ac-2e39-4b7a-8f96-59f8eb2df66d"/>
                     <staticText>
-                        <reportElement mode="Opaque" x="5" y="3" width="100" height="20" forecolor="#FFFFFF"
-                                       backcolor="#141313" uuid="f87d108f-6fd7-4b89-9d8f-76a1e8bf68c4"/>
+                        <reportElement mode="Opaque" x="5" y="3" width="100" height="20" forecolor="#065673" backcolor="#FCFEFF" uuid="f87d108f-6fd7-4b89-9d8f-76a1e8bf68c4"/>
                         <textElement>
                             <font size="12"/>
                         </textElement>
                         <text><![CDATA[Date Range]]></text>
                     </staticText>
                     <textField textAdjust="StretchHeight">
-                        <reportElement style="SubTitle" isPrintRepeatedValues="false" x="210" y="0" width="295"
-                                       height="24" forecolor="#FFFFFF" uuid="4fbebfd3-a184-45af-b7d9-5c3faaf087b5"/>
+                        <reportElement style="SubTitle" isPrintRepeatedValues="false" x="110" y="0" width="280" height="24" forecolor="#065673" uuid="4fbebfd3-a184-45af-b7d9-5c3faaf087b5"/>
                         <textElement>
                             <font isBold="false"/>
                         </textElement>
@@ -118,19 +86,16 @@
         <groupHeader>
             <band height="37">
                 <frame>
-                    <reportElement mode="Opaque" x="0" y="7" width="555" height="24" forecolor="#B89F7D"
-                                   backcolor="#000000" uuid="0a5fc4ac-2e39-4b7a-8f96-59f8eb2df66d"/>
+                    <reportElement mode="Opaque" x="0" y="-50" width="390" height="24" forecolor="#B89F7D" backcolor="#FCFCFC" uuid="0a5fc4ac-2e39-4b7a-8f96-59f8eb2df66d"/>
                     <staticText>
-                        <reportElement mode="Opaque" x="6" y="3" width="100" height="20" forecolor="#FFFFFF"
-                                       backcolor="#141313" uuid="10a7358f-1611-4248-8cc3-6ce2caf959fa"/>
+                        <reportElement mode="Opaque" x="6" y="3" width="100" height="20" forecolor="#065673" backcolor="#FCFCFC" uuid="10a7358f-1611-4248-8cc3-6ce2caf959fa"/>
                         <textElement>
                             <font size="12"/>
                         </textElement>
                         <text><![CDATA[Price]]></text>
                     </staticText>
                     <textField textAdjust="StretchHeight">
-                        <reportElement style="SubTitle" isPrintRepeatedValues="false" x="210" y="0" width="295"
-                                       height="24" forecolor="#FFFFFF" uuid="4fbebfd3-a184-45af-b7d9-5c3faaf087b5"/>
+                        <reportElement style="SubTitle" isPrintRepeatedValues="false" x="110" y="-1" width="280" height="24" forecolor="#065673" uuid="4fbebfd3-a184-45af-b7d9-5c3faaf087b5"/>
                         <textElement>
                             <font isBold="false"/>
                         </textElement>
@@ -140,7 +105,7 @@
             </band>
         </groupHeader>
         <groupFooter>
-            <band height="6"/>
+            <band/>
         </groupFooter>
     </group>
     <group name="Group5">
@@ -148,19 +113,16 @@
         <groupHeader>
             <band height="121">
                 <frame>
-                    <reportElement mode="Opaque" x="0" y="5" width="555" height="86" forecolor="#B89F7D"
-                                   backcolor="#000000" uuid="c60428c4-6fdf-4272-ab38-115aaf784a0a"/>
+                    <reportElement mode="Opaque" x="0" y="-52" width="390" height="86" forecolor="#B89F7D" backcolor="#FAFCFC" uuid="c60428c4-6fdf-4272-ab38-115aaf784a0a"/>
                     <textField textAdjust="StretchHeight">
-                        <reportElement style="SubTitle" isPrintRepeatedValues="false" x="4" y="21" width="551"
-                                       height="65" forecolor="#FFFFFF" uuid="2183133e-ea68-4fcd-ade0-2d8c5e244c30"/>
+                        <reportElement style="SubTitle" isPrintRepeatedValues="false" x="4" y="21" width="386" height="65" forecolor="#065673" uuid="2183133e-ea68-4fcd-ade0-2d8c5e244c30"/>
                         <textElement>
                             <font isBold="false"/>
                         </textElement>
                         <textFieldExpression><![CDATA[$F{additionalInfo}]]></textFieldExpression>
                     </textField>
                     <staticText>
-                        <reportElement mode="Opaque" x="4" y="5" width="100" height="20" forecolor="#FFFFFF"
-                                       backcolor="#141313" uuid="7d9542f3-c0b7-4521-9efe-d853f60d2022"/>
+                        <reportElement mode="Opaque" x="4" y="5" width="100" height="20" forecolor="#065673" backcolor="#FCFCFC" uuid="7d9542f3-c0b7-4521-9efe-d853f60d2022"/>
                         <textElement>
                             <font size="12"/>
                         </textElement>
@@ -173,37 +135,26 @@
             <band height="6"/>
         </groupFooter>
     </group>
-    <background>
-        <band splitType="Stretch"/>
-    </background>
     <title>
         <band height="132" splitType="Stretch">
             <frame>
-                <reportElement mode="Opaque" x="0" y="0" width="555" height="95" backcolor="#000000"
-                               uuid="6c6ca4e1-17cd-4913-93d6-5e670ea9ae8a"/>
-                <staticText>
-                    <reportElement style="Title" x="0" y="0" width="370" height="66"
-                                   uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
-                    <textElement>
-                        <font isBold="false"/>
-                    </textElement>
-                    <text><![CDATA[VTourAgent]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement style="SubTitle" x="157" y="66" width="249" height="29"
-                                   uuid="8978eac3-c578-41c9-837e-48d2b0184642"/>
-                    <textElement>
-                        <font size="22" isBold="false"/>
-                    </textElement>
-                    <text><![CDATA[Abdullayev Vüsal]]></text>
-                </staticText>
+                <reportElement mode="Opaque" x="0" y="0" width="390" height="95" forecolor="#FCFCFC" backcolor="#FCFCFC" uuid="6c6ca4e1-17cd-4913-93d6-5e670ea9ae8a"/>
+                <image>
+                    <reportElement x="130" y="30" width="150" height="150" uuid="4252b1d0-3bf5-4904-a8ea-4322d3b0457c"/>
+                    <imageExpression><![CDATA["C:/Users/Abdullayev/Desktop/TurAIAgent/src/main/resources/asantur.png"]]></imageExpression>
+                </image>
             </frame>
             <frame>
-                <reportElement mode="Opaque" x="0" y="100" width="555" height="32" forecolor="#000000"
-                               backcolor="#CC0000" uuid="e3c14156-5b51-4201-918b-97fdc012e5d4"/>
+                <reportElement mode="Opaque" x="0" y="100" width="390" height="32" forecolor="#FFFFFF" backcolor="#065673" uuid="e3c14156-5b51-4201-918b-97fdc012e5d4"/>
+                <box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+                    <pen lineWidth="1.0" lineStyle="Solid"/>
+                    <topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
                 <textField pattern="EEEEE dd MMMMM yyyy">
-                    <reportElement x="411" y="10" width="144" height="20" forecolor="#FFFFFF"
-                                   uuid="5c3301e7-a737-4c59-8a2f-a6c79fd1adb8"/>
+                    <reportElement x="241" y="7" width="144" height="20" forecolor="#FFFFFF" uuid="5c3301e7-a737-4c59-8a2f-a6c79fd1adb8"/>
                     <textElement textAlignment="Right">
                         <font size="12"/>
                     </textElement>
@@ -219,26 +170,12 @@
         <band height="26" splitType="Stretch"/>
     </columnHeader>
     <detail>
-        <band height="18" splitType="Stretch">
-            <frame>
-                <reportElement style="Row" mode="Opaque" x="0" y="0" width="555" height="18"
-                               uuid="b50221b5-8254-440b-8c6f-1f0b138c9259"/>
-                <frame>
-                    <reportElement x="30" y="-418" width="468" height="469"
-                                   uuid="7c0c3fd9-2872-4d0b-8d08-f308e2f6f2eb"/>
-                    <!--                    <image>-->
-                    <!--                        <reportElement x="0" y="0" width="468" height="469" uuid="e90ec87f-8b71-45ac-a796-ffe0edcbaa34"/>-->
-                    <!--                        <imageExpression><![CDATA["C:\\Users\\Abdullayev\\Desktop\\TurAIAgent\\src\\main\\resources\\back.jpg"]]></imageExpression>-->
-                    <!--                    </image>-->
-                </frame>
-            </frame>
-        </band>
+        <band height="18" splitType="Stretch"/>
     </detail>
     <columnFooter>
         <band height="7" splitType="Stretch">
             <line>
-                <reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1"
-                               uuid="1133a906-5b71-476e-9f3e-bc97c97058c1"/>
+                <reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="1133a906-5b71-476e-9f3e-bc97c97058c1"/>
                 <graphicElement>
                     <pen lineWidth="0.5" lineColor="#999999"/>
                 </graphicElement>
@@ -248,11 +185,9 @@
     <pageFooter>
         <band height="25" splitType="Stretch">
             <frame>
-                <reportElement mode="Opaque" x="0" y="1" width="555" height="24" forecolor="#D0B48E" backcolor="#000000"
-                               uuid="729c3539-f946-4d0e-a0a7-bda2815ea1b0"/>
+                <reportElement mode="Opaque" x="0" y="-142" width="390" height="24" forecolor="#FCFCFC" backcolor="#065673" uuid="729c3539-f946-4d0e-a0a7-bda2815ea1b0"/>
                 <textField pattern="EEEEE dd MMMMM yyyy">
-                    <reportElement style="Column header" x="2" y="1" width="197" height="20" forecolor="#FFFFFF"
-                                   uuid="137d38c7-1a83-4fc5-b156-9d5f1b1a0ddc"/>
+                    <reportElement style="Column header" x="2" y="1" width="197" height="20" forecolor="#FFFFFF" uuid="137d38c7-1a83-4fc5-b156-9d5f1b1a0ddc"/>
                     <textElement verticalAlignment="Middle">
                         <font size="10" isBold="false"/>
                     </textElement>

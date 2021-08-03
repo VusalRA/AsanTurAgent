@@ -157,7 +157,7 @@ public class AgentServiceImpl implements AgentService {
     }
 
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+//    @Scheduled(cron = "0 0/1 * * * ?")
     @Override
     public void checkRequestEndTime() {
         List<Request> requests = requestRepo.findAll();
@@ -332,14 +332,12 @@ public class AgentServiceImpl implements AgentService {
     public LocalDateTime endDate(LocalTime currentTime) {
         LocalDateTime requestDeadline = null;
         if (currentTime.compareTo(LocalTime.parse(startTime)) <= 0) {
-            System.out.println("asdasdasd");
             String date = String.valueOf(LocalDate.now());
             String time = String.valueOf(LocalTime.parse(startTime).plusHours(8).plusMinutes(currentTime.getMinute()));
             requestDeadline = LocalDateTime.parse(date + "T" + time);
             return requestDeadline;
         }
         if (currentTime.compareTo(LocalTime.parse(endTime)) >= 0) {
-            System.out.println("ghjghjghj");
             String date = String.valueOf(LocalDate.now().plusDays(1));
             String time = String.valueOf(LocalTime.parse(startTime).plusHours(8));
             requestDeadline = LocalDateTime.parse(date + "T" + time);
@@ -349,7 +347,6 @@ public class AgentServiceImpl implements AgentService {
             LocalTime time1 = currentTime;
             while (waitingHours != 0) {
                 if (!(currentTime.compareTo(LocalTime.parse(endTime)) > 0)) {
-                    System.out.println("khgkv");
                     currentTime = currentTime.plusHours(1);
                     requestDeadline = LocalDateTime.parse(String.valueOf(LocalDate.now()) + "T" + String.valueOf(currentTime));
                     if (!(LocalTime.parse(currentTime.getHour() + ":00").compareTo(LocalTime.parse(endTime)) == 0)) {

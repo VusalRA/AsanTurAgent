@@ -29,7 +29,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable().authorizeRequests()
 //                .antMatchers("/api/v1/registration/confirm/token/*").permitAll()
-                .antMatchers("/api/v1/registration/*/*").permitAll().anyRequest().authenticated()
+                .antMatchers("/api/v1/registration/*/*").permitAll().
+        antMatchers("/api/v1/forgot/*").permitAll().anyRequest().authenticated()
                 .and().exceptionHandling()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
