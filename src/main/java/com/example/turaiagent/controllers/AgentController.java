@@ -39,7 +39,7 @@ public class AgentController {
     }
 
     @PostMapping("/offered")
-    public ResponseEntity<Offer> getRequestOffer(@RequestBody Offer offer) throws JsonProcessingException {
+    public ResponseEntity<Offer> createRequestOffer(@RequestBody Offer offer) throws JsonProcessingException {
         return ResponseEntity.ok(agentService.createOffer(offer, agentService.getFromToken().getId()));
     }
 

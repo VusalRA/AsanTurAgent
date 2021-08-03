@@ -8,6 +8,7 @@ import com.example.turaiagent.registration.token.ConfirmationToken;
 import com.example.turaiagent.registration.token.ConfirmationTokenService;
 import com.example.turaiagent.repositories.*;
 import com.example.turaiagent.services.email.EmailService;
+import com.example.turaiagent.util.CalculateEndDate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -201,7 +202,7 @@ public class AgentServiceImpl implements AgentService {
         File file = Paths.get(res.toURI()).toFile();
 
         Offer offer = offerRepo.findById(offerId).get();
-        System.out.println("NOTES JPG: "+offer.getNotes());
+        System.out.println("NOTES JPG: " + offer.getNotes());
         list.add(offer);
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
@@ -308,9 +309,11 @@ public class AgentServiceImpl implements AgentService {
     @RabbitListener(queues = "request_queue")
     public void listener(RequestDto requestDto) throws IOException {
 
+
         ObjectMapper objectMapper = new ObjectMapper();
         String java = objectMapper.writeValueAsString(requestDto.getData());
-        Request request = Request.builder().uuid(requestDto.getUuid()).data(java).requestDateTime(LocalDateTime.now()).requestEndDateTime(endDate(LocalTime.from(LocalDateTime.now()))).build();
+
+        Request request = Request.builder().uuid(requestDto.getUuid()).data(java).requestDateTime(LocalDateTime.now()).requestEndDateTime(CalculateEndDate.getDeadLine(LocalTime.now(), startTime, endTime, waitingHours)).build();
         requestRepo.save(request);
         List<Agent> agents = agentRepo.findAll();
 
