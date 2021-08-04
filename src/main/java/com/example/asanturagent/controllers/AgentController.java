@@ -1,7 +1,6 @@
 package com.example.asanturagent.controllers;
 
 import com.example.asanturagent.dtos.NewPassword;
-import com.example.asanturagent.dtos.ResetPasswordDto;
 import com.example.asanturagent.models.Agent;
 import com.example.asanturagent.models.AgentRequest;
 import com.example.asanturagent.models.Offer;
@@ -48,8 +47,9 @@ public class AgentController {
     }
 
     @PostMapping("/reset")
-    public ResponseEntity<Agent> getResetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
-        return ResponseEntity.ok(agentService.resetPassword(resetPasswordDto));
+    public ResponseEntity<String> getResetPassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
+        agentService.resetPassword(oldPassword, newPassword);
+        return ResponseEntity.ok("Your password has been changed. New password is: " + newPassword);
     }
 
     @GetMapping("/forgot/{email}")

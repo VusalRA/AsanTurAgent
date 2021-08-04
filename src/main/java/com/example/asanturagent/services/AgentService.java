@@ -25,7 +25,7 @@ public interface AgentService {
 
     List<AgentRequest> getOfferedRequestsByEmail(String email);
 
-    Agent resetPassword(ResetPasswordDto resetPasswordDto);
+    Agent resetPassword(String oldPassword,String repeatPassword);
 
     Agent forgotPassword(String email);
 

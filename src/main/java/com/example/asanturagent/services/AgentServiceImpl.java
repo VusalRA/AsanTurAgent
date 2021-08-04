@@ -1,8 +1,12 @@
 package com.example.asanturagent.services;
 
 import com.example.asanturagent.configs.RabbitConfig;
-import com.example.asanturagent.dtos.*;
+import com.example.asanturagent.dtos.AcceptDto;
+import com.example.asanturagent.dtos.OfferDto;
+import com.example.asanturagent.dtos.RequestDto;
+import com.example.asanturagent.dtos.StopDto;
 import com.example.asanturagent.enums.Status;
+import com.example.asanturagent.exceptions.OldPasswordIncorrectException;
 import com.example.asanturagent.exceptions.RequestException;
 import com.example.asanturagent.models.*;
 import com.example.asanturagent.registration.token.ConfirmationToken;
@@ -42,17 +46,6 @@ import java.util.*;
 @Service
 public class AgentServiceImpl implements AgentService {
 
-//    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-//
-//    @Autowired
-//    private EmailService emailService;
-//
-//    @Autowired
-//    private ForgotPasswordRepository forgotPasswordRepository;
-
-//    @Autowired
-//    RabbitTemplate rabbitTemplate;
-
     @Value("${work.starttime}")
     String startTime;
 
@@ -88,16 +81,6 @@ public class AgentServiceImpl implements AgentService {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    //    public AgentServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, AgentRepository agentRepo, RequestRepository requestRepo, AgentRequestRepository agentRequestRepo, ArchiveRepository archiveRepo, OfferRepository offerRepo, ConfirmationTokenService confirmationTokenService) {
-//        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-//        this.agentRepo = agentRepo;
-//        this.requestRepo = requestRepo;
-//        this.agentRequestRepo = agentRequestRepo;
-//        this.archiveRepo = archiveRepo;
-//        this.offerRepo = offerRepo;
-//        this.confirmationTokenService = confirmationTokenService;
-//    }
-
     @Override
     public List<AgentRequest> getRequests(Long agentId) {
         System.out.println(agentRequestRepo.findAllByAgentIdWithout(agentId).size());
@@ -131,15 +114,27 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
-    public Agent resetPassword(ResetPasswordDto resetPasswordDto) {
+    public Agent resetPassword(String oldPassword, String newPassword) {
         Agent agent = getFromToken();
-        if (bCryptPasswordEncoder.matches(resetPasswordDto.getOldPassword(), agent.getPassword())) {
-            agent.setPassword(bCryptPasswordEncoder.encode(resetPasswordDto.getNewPassword()));
-            System.out.println("Password changed");
-            System.out.println(agent.getPassword());
+        if (bCryptPasswordEncoder.matches(oldPassword, agent.getPassword())) {
+            agent.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        } else {
+            throw new OldPasswordIncorrectException();
         }
         return agentRepo.save(agent);
     }
+
+
+//    @Override
+//    public Agent resetPassword(ResetPasswordDto resetPasswordDto) {
+//        Agent agent = getFromToken();
+//        if (bCryptPasswordEncoder.matches(resetPasswordDto.getOldPassword(), agent.getPassword())) {
+//            agent.setPassword(bCryptPasswordEncoder.encode(resetPasswordDto.getNewPassword()));
+//            System.out.println("Password changed");
+//            System.out.println(agent.getPassword());
+//        }
+//        return agentRepo.save(agent);
+//    }
 
     @Override
     public Agent forgotPassword(String email) {
@@ -174,12 +169,10 @@ public class AgentServiceImpl implements AgentService {
     }
 
 
-    //    @Scheduled(cron = "0 0/1 * * * ?")
     @Scheduled(cron = "0/5 * * * * ?")
     @Override
     public void checkRequestEndTime() {
         List<Request> requests = requestRepo.findAll();
-        System.out.println(requests.size());
         requests.forEach(request -> {
             if (LocalDateTime.now().isAfter(request.getRequestEndDateTime())) {
                 AgentRequest agentRequest = agentRequestRepo.findByRequest(request);
