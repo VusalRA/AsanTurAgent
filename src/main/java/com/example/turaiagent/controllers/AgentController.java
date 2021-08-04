@@ -4,7 +4,6 @@ import com.example.turaiagent.dtos.NewPassword;
 import com.example.turaiagent.dtos.ResetPasswordDto;
 import com.example.turaiagent.models.Agent;
 import com.example.turaiagent.models.AgentRequest;
-import com.example.turaiagent.models.Archive;
 import com.example.turaiagent.models.Offer;
 import com.example.turaiagent.services.AgentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,12 +28,12 @@ public class AgentController {
     }
 
     @GetMapping("/archive/{requestId}")
-    public ResponseEntity<Archive> moveToArchive(@PathVariable Long requestId) throws JsonProcessingException {
+    public ResponseEntity<AgentRequest> moveToArchive(@PathVariable Long requestId) throws JsonProcessingException {
         return ResponseEntity.ok(agentService.moveToArchive(agentService.getFromToken().getId(), requestId));
     }
 
     @GetMapping("/archive")
-    public ResponseEntity<List<Archive>> findAllByAgentId() throws JsonProcessingException {
+    public ResponseEntity<List<AgentRequest>> findAllByAgentId() throws JsonProcessingException {
         return ResponseEntity.ok(agentService.getArchiveList(agentService.getFromToken().getId()));
     }
 
@@ -46,6 +45,11 @@ public class AgentController {
     @GetMapping("/offered")
     public ResponseEntity<List<AgentRequest>> getOfferedRequests() throws JsonProcessingException {
         return ResponseEntity.ok(agentService.getOfferedRequestsByEmail(agentService.getFromToken().getEmail()));
+    }
+
+    @GetMapping("/accept")
+    public ResponseEntity<List<AgentRequest>> getAcceptRequests() throws JsonProcessingException {
+        return ResponseEntity.ok(agentService.getAcceptRequestsByEmail(agentService.getFromToken().getEmail()));
     }
 
     @PostMapping("/reset")

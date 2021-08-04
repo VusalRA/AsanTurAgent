@@ -3,6 +3,7 @@ package com.example.turaiagent.services;
 import com.example.turaiagent.configs.RabbitConfig;
 import com.example.turaiagent.dtos.*;
 import com.example.turaiagent.enums.Status;
+import com.example.turaiagent.exceptions.RequestException;
 import com.example.turaiagent.models.*;
 import com.example.turaiagent.registration.token.ConfirmationToken;
 import com.example.turaiagent.registration.token.ConfirmationTokenService;
@@ -18,6 +19,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -34,7 +36,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -88,19 +89,19 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
-    public Archive moveToArchive(Long agentId, Long requestId) {
+    public AgentRequest moveToArchive(Long agentId, Long requestId) {
         AgentRequest agentRequest = agentRequestRepo.findByAgentIdAndRequestId(agentId, requestId);
-        if (agentRequest.getStatus().equals(Status.NEW_REQUEST.name())) {
-            agentRequest.setStatus(Status.EXPIRED.name());
+        if (!agentRequest.getStatus().equals(Status.NEW_REQUEST.name())) {
+            agentRequest.setArchive(true);
+            return agentRequestRepo.save(agentRequest);
+        } else {
+            throw new RequestException();
         }
-        Archive archive = archiveRepo.save(new Archive(agentRequest));
-        agentRequestRepo.delete(agentRequest);
-        return archive;
     }
 
     @Override
-    public List<Archive> getArchiveList(Long agentId) {
-        return archiveRepo.findAllByAgentId(agentId);
+    public List<AgentRequest> getArchiveList(Long agentId) {
+        return agentRequestRepo.findAllByAgentIdAndArchiveTrue(agentId);
     }
 
     @Override
@@ -158,20 +159,26 @@ public class AgentServiceImpl implements AgentService {
 
 
     //    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0/5 * * * * ?")
     @Override
     public void checkRequestEndTime() {
         List<Request> requests = requestRepo.findAll();
         System.out.println(requests.size());
         requests.forEach(request -> {
-            if (LocalDateTime.now().isBefore(request.getRequestEndDateTime())) {
-                System.out.println("Inside");
+            if (LocalDateTime.now().isAfter(request.getRequestEndDateTime())) {
                 AgentRequest agentRequest = agentRequestRepo.findByRequest(request);
-                agentRequest.setStatus(Status.EXPIRED.name());
-                agentRequestRepo.save(agentRequest);
+                if (agentRequest.getStatus().equals(Status.NEW_REQUEST)) {
+                    agentRequest.setStatus(Status.EXPIRED.name());
+                    agentRequestRepo.save(agentRequest);
+                }
             }
         });
+    }
 
-
+    @Override
+    public List<AgentRequest> getAcceptRequestsByEmail(String email) {
+        Agent agent = agentRepo.findUserByEmail(email);
+        return agentRequestRepo.findAllByAgentIdAndAccept(agent.getId());
     }
 
 
@@ -323,7 +330,7 @@ public class AgentServiceImpl implements AgentService {
 
         agents.forEach(appUser -> agentRequestRepo.save(AgentRequest.builder()
                 .agentId(appUser.getId()).request(request)
-                .status(Status.NEW_REQUEST.name()).build()));
+                .status(Status.NEW_REQUEST.name()).archive(false).build()));
 
 //        List<Agent> agentList = agentRepo.findAll();
 //        agentList.forEach(agent -> agentRequestRepo
@@ -332,44 +339,6 @@ public class AgentServiceImpl implements AgentService {
 //                        .status(Status.NEW_REQUEST.name()).build()));
     }
 
-
-    public LocalDateTime endDate(LocalTime currentTime) {
-        LocalDateTime requestDeadline = null;
-        if (currentTime.compareTo(LocalTime.parse(startTime)) <= 0) {
-            String date = String.valueOf(LocalDate.now());
-            String time = String.valueOf(LocalTime.parse(startTime).plusHours(8).plusMinutes(currentTime.getMinute()));
-            requestDeadline = LocalDateTime.parse(date + "T" + time);
-            return requestDeadline;
-        }
-        if (currentTime.compareTo(LocalTime.parse(endTime)) >= 0) {
-            String date = String.valueOf(LocalDate.now().plusDays(1));
-            String time = String.valueOf(LocalTime.parse(startTime).plusHours(8));
-            requestDeadline = LocalDateTime.parse(date + "T" + time);
-            return requestDeadline;
-        } else {
-
-            LocalTime time1 = currentTime;
-            while (waitingHours != 0) {
-                if (!(currentTime.compareTo(LocalTime.parse(endTime)) > 0)) {
-                    currentTime = currentTime.plusHours(1);
-                    requestDeadline = LocalDateTime.parse(String.valueOf(LocalDate.now()) + "T" + String.valueOf(currentTime));
-                    if (!(LocalTime.parse(currentTime.getHour() + ":00").compareTo(LocalTime.parse(endTime)) == 0)) {
-                        waitingHours--;
-                    }
-                } else {
-                    String date = String.valueOf(LocalDate.now().plusDays(1));
-                    String time;
-                    if ((LocalTime.parse(currentTime.getHour() + ":00").compareTo(LocalTime.parse(endTime)) == 0) && waitingHours == 1)
-                        time = String.valueOf(LocalTime.parse(startTime).plusHours(0).plusMinutes(currentTime.getMinute()));
-                    else
-                        time = String.valueOf(LocalTime.parse(startTime).plusHours(waitingHours - 1).plusMinutes(currentTime.getMinute()));
-                    requestDeadline = LocalDateTime.parse(date + "T" + time);
-                    break;
-                }
-            }
-            return requestDeadline;
-        }
-    }
 
     public void changePassword(String newPassword, Agent agent) {
         System.out.println("NEW PASSWORD: " + newPassword);

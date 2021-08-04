@@ -24,6 +24,8 @@ public class AgentRequest {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    private Boolean archive;
+
     @ManyToOne(targetEntity = Request.class)
     private Request request;
 

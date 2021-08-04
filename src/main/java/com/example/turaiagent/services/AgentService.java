@@ -4,7 +4,6 @@ import com.example.turaiagent.dtos.ResetPasswordDto;
 import com.example.turaiagent.dtos.StopDto;
 import com.example.turaiagent.models.Agent;
 import com.example.turaiagent.models.AgentRequest;
-import com.example.turaiagent.models.Archive;
 import com.example.turaiagent.models.Offer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -14,9 +13,9 @@ public interface AgentService {
 
     List<AgentRequest> getRequests(Long agentId);
 
-    Archive moveToArchive(Long agentId, Long requestId);
+    AgentRequest moveToArchive(Long agentId, Long requestId);
 
-    List<Archive> getArchiveList(Long agentId);
+    List<AgentRequest> getArchiveList(Long agentId);
 
     List<AgentRequest> getOfferedRequests(Long agentId);
 
@@ -39,5 +38,7 @@ public interface AgentService {
     void stopRequest(StopDto stopDto);
 
     void checkRequestEndTime();
+
+    List<AgentRequest> getAcceptRequestsByEmail(String email);
 
 }
