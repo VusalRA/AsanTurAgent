@@ -1,6 +1,6 @@
 package com.example.asanturagent.controllers;
 
-import com.example.asanturagent.dtos.NewPassword;
+import com.example.asanturagent.exceptions.RequestException;
 import com.example.asanturagent.models.Agent;
 import com.example.asanturagent.models.AgentRequest;
 import com.example.asanturagent.models.Offer;
@@ -31,6 +31,11 @@ public class AgentController {
         return ResponseEntity.ok(agentService.getAllRequest(agentService.getFromToken().getEmail(), status.toUpperCase()));
     }
 
+    @PostMapping("/offered")
+    public ResponseEntity<Offer> createRequestOffer(@RequestBody Offer offer) throws JsonProcessingException {
+        return ResponseEntity.ok(agentService.createOffer(offer, agentService.getFromToken().getId()));
+    }
+
     @GetMapping("/archive/{requestId}")
     public ResponseEntity<AgentRequest> moveToArchive(@PathVariable Long requestId) throws JsonProcessingException {
         return ResponseEntity.ok(agentService.moveToArchive(agentService.getFromToken().getId(), requestId));
@@ -41,10 +46,6 @@ public class AgentController {
         return ResponseEntity.ok(agentService.getArchiveList(agentService.getFromToken().getId()));
     }
 
-    @PostMapping("/offered")
-    public ResponseEntity<Offer> createRequestOffer(@RequestBody Offer offer) throws JsonProcessingException {
-        return ResponseEntity.ok(agentService.createOffer(offer, agentService.getFromToken().getId()));
-    }
 
     @PostMapping("/reset")
     public ResponseEntity<String> getResetPassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
@@ -56,23 +57,26 @@ public class AgentController {
     public void forgotPassword(@PathVariable String email) {
         agentService.forgotPassword(email);
     }
-
-//    @GetMapping("/forgot/confirm/{token}")
-//    public String forgotConfirm(@PathVariable String token) {
-//        return agentService.confirmToken(token);
-//    }
 //
+//    @PostMapping("/forgot/{password}")
+//    public String forgotPasswordConfirm(@PathVariable Integer password, @RequestBody NewPassword newPassword) {
+//        System.out.println("FORGOT: " + agentService.confirm(password));
+//
+//        Agent agent = agentService.findAgent(agentService.confirm(password));
+//
+//        System.out.println(agent.getEmail());
+//        agentService.changePassword(newPassword.getPassword(), agent);
+//        return "Changed";
+//    }
 
     @PostMapping("/forgot/{password}")
-    public String forgotPasswordConfirm(@PathVariable Integer password, @RequestBody NewPassword newPassword) {
-        System.out.println("FORGOT: " + agentService.confirm(password));
-
-        Agent agent = agentService.findAgent(agentService.confirm(password));
-
-        System.out.println(agent.getEmail());
-        agentService.changePassword(newPassword.getPassword(), agent);
-        return "Changed";
+    public String forgotPasswordConfirm(@PathVariable Integer password, @RequestParam String newPassword, @RequestParam String repeatPassword) {
+        if (newPassword.equals(repeatPassword)) {
+            Agent agent = agentService.findAgent(agentService.confirm(password));
+            agentService.changePassword(newPassword, agent);
+            return "Changed";
+        } else {
+            return "The password entered is not the same";
+        }
     }
-
-
 }

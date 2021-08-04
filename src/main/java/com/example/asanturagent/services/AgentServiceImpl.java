@@ -7,6 +7,7 @@ import com.example.asanturagent.dtos.RequestDto;
 import com.example.asanturagent.dtos.StopDto;
 import com.example.asanturagent.enums.Status;
 import com.example.asanturagent.exceptions.OldPasswordIncorrectException;
+import com.example.asanturagent.exceptions.RandomNumberIncorrectException;
 import com.example.asanturagent.exceptions.RequestException;
 import com.example.asanturagent.models.*;
 import com.example.asanturagent.registration.token.ConfirmationToken;
@@ -351,7 +352,7 @@ public class AgentServiceImpl implements AgentService {
     }
 
     public String confirm(Integer password) {
-        ForgotPassword forgotPassword = forgotPasswordRepository.findByRandom(password).orElseThrow(() -> new IllegalStateException("random not found"));
+        ForgotPassword forgotPassword = forgotPasswordRepository.findByRandom(password).orElseThrow(() -> new RandomNumberIncorrectException());
         return forgotPassword.getEmail();
     }
 
