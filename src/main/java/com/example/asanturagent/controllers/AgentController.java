@@ -57,17 +57,6 @@ public class AgentController {
     public void forgotPassword(@PathVariable String email) {
         agentService.forgotPassword(email);
     }
-//
-//    @PostMapping("/forgot/{password}")
-//    public String forgotPasswordConfirm(@PathVariable Integer password, @RequestBody NewPassword newPassword) {
-//        System.out.println("FORGOT: " + agentService.confirm(password));
-//
-//        Agent agent = agentService.findAgent(agentService.confirm(password));
-//
-//        System.out.println(agent.getEmail());
-//        agentService.changePassword(newPassword.getPassword(), agent);
-//        return "Changed";
-//    }
 
     @PostMapping("/forgot/{password}")
     public String forgotPasswordConfirm(@PathVariable Integer password, @RequestParam String newPassword, @RequestParam String repeatPassword) {
