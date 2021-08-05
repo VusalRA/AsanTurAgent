@@ -1,14 +1,18 @@
 package com.example.asanturagent.registration;
 
 import com.example.asanturagent.enums.AppUserRole;
+import com.example.asanturagent.exceptions.EmailAlreadyConfirmedException;
+import com.example.asanturagent.exceptions.EmailNotValidException;
+import com.example.asanturagent.exceptions.TokenExpiredException;
 import com.example.asanturagent.models.Agent;
 import com.example.asanturagent.registration.token.ConfirmationToken;
 import com.example.asanturagent.registration.token.ConfirmationTokenService;
 import com.example.asanturagent.services.AgentRegistrationService;
 import com.example.asanturagent.services.email.EmailSender;
-import com.example.asanturagent.util.jwt.JwtTokenUtil;
 import com.example.asanturagent.util.EmailValidator;
-import lombok.AllArgsConstructor;
+import com.example.asanturagent.util.jwt.JwtTokenUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -20,24 +24,28 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RegistrationService {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final JwtUserDetailsService userDetailsService;
     private final AgentRegistrationService agentRegistrationService;
-
     private final EmailValidator emailValidator;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
     private final AuthenticationManager authenticationManager;
 
+    @Value("${registration.link}")
+    private String regLink;
+
+
     public String register(RegistrationRequest request) {
+
         boolean isValidEmail = emailValidator.
                 test(request.getEmail());
 
         if (!isValidEmail) {
-            throw new IllegalStateException("email not valid");
+            throw new EmailNotValidException();
         }
 
         String token = agentRegistrationService.signUpUser(
@@ -51,16 +59,12 @@ public class RegistrationService {
                 )
         );
 
-
-//        String link = "http://localhost:9393/api/v1/registration/confirm?token=" + token;
-        String link = "http://localhost:9393/api/v1/registration/confirm/" + token;
-
-        System.out.println("LINK: " + link + " TOKEN: " + token);
+        String link = regLink + token;
         emailSender.send(
                 request.getEmail(),
                 buildEmail(request.getFirstName(), link));
 
-        return token;
+        return "An email has been sent to you for confirmation, please confirm";
     }
 
     @Transactional
@@ -71,19 +75,19 @@ public class RegistrationService {
                         new IllegalStateException("token not found"));
 
         if (confirmationToken.getConfirmedAt() != null) {
-            throw new IllegalStateException("email already confirmed");
+            throw new EmailAlreadyConfirmedException();
         }
 
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("token expired");
+            throw new TokenExpiredException();
         }
 
         confirmationTokenService.setConfirmedAt(token);
         agentRegistrationService.enableAppUser(
                 confirmationToken.getAgent().getEmail());
-        return "confirmed";
+        return "Email confirmed successfully";
     }
 
     public String authenticate(String username, String password) throws Exception {
