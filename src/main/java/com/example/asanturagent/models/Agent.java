@@ -21,14 +21,14 @@ import java.util.Collections;
 public class Agent implements UserDetails {
 
     @SequenceGenerator(
-            name = "appuser_sequence",
-            sequenceName = "student_sequence",
+            name = "agentUser_sequence",
+            sequenceName = "agent_sequence",
             allocationSize = 1
     )
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "appuser_sequence"
+            generator = "agent_sequence"
     )
     private Long id;
     private String firstName;
@@ -73,13 +73,13 @@ public class Agent implements UserDetails {
         return email;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
+//    public String getFirstName() {
+//        return firstName;
+//    }
+//
+//    public String getLastName() {
+//        return lastName;
+//    }
 
     @Override
     public boolean isAccountNonExpired() {

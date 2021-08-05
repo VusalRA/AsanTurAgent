@@ -1,6 +1,5 @@
 package com.example.asanturagent.controllers;
 
-import com.example.asanturagent.exceptions.RequestException;
 import com.example.asanturagent.models.Agent;
 import com.example.asanturagent.models.AgentRequest;
 import com.example.asanturagent.models.Offer;
@@ -23,27 +22,27 @@ public class AgentController {
 
     @GetMapping("/requests")
     public ResponseEntity<List<AgentRequest>> getRequests() throws JsonProcessingException {
-        return ResponseEntity.ok(agentService.getRequests(agentService.getFromToken().getId()));
+        return ResponseEntity.ok(agentService.getRequests(agentService.getAgentFromToken().getId()));
     }
 
     @GetMapping("/requests/{status}")
     public ResponseEntity<List<AgentRequest>> getAllRequests(@PathVariable String status) throws JsonProcessingException {
-        return ResponseEntity.ok(agentService.getAllRequest(agentService.getFromToken().getEmail(), status.toUpperCase()));
+        return ResponseEntity.ok(agentService.getAllRequest(agentService.getAgentFromToken().getEmail(), status.toUpperCase()));
     }
 
     @PostMapping("/offered")
     public ResponseEntity<Offer> createRequestOffer(@RequestBody Offer offer) throws JsonProcessingException {
-        return ResponseEntity.ok(agentService.createOffer(offer, agentService.getFromToken().getId()));
+        return ResponseEntity.ok(agentService.createOffer(offer, agentService.getAgentFromToken().getId()));
     }
 
     @GetMapping("/archive/{requestId}")
     public ResponseEntity<AgentRequest> moveToArchive(@PathVariable Long requestId) throws JsonProcessingException {
-        return ResponseEntity.ok(agentService.moveToArchive(agentService.getFromToken().getId(), requestId));
+        return ResponseEntity.ok(agentService.moveToArchive(agentService.getAgentFromToken().getId(), requestId));
     }
 
     @GetMapping("/archive")
     public ResponseEntity<List<AgentRequest>> findAllByAgentId() throws JsonProcessingException {
-        return ResponseEntity.ok(agentService.getArchiveList(agentService.getFromToken().getId()));
+        return ResponseEntity.ok(agentService.getArchiveList(agentService.getAgentFromToken().getId()));
     }
 
 

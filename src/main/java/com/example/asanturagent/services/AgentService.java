@@ -1,5 +1,7 @@
 package com.example.asanturagent.services;
 
+import com.example.asanturagent.dtos.AcceptDto;
+import com.example.asanturagent.dtos.RequestDto;
 import com.example.asanturagent.models.Agent;
 import com.example.asanturagent.models.AgentRequest;
 import com.example.asanturagent.models.Offer;
@@ -15,13 +17,14 @@ public interface AgentService {
 
     List<AgentRequest> getArchiveList(Long agentId);
 
-    List<AgentRequest> getOfferedRequests(Long agentId);
+//    List<AgentRequest> getOfferedRequests(Long agentId);
+
+//    List<AgentRequest> getOfferedRequestsByEmail(String email);
+
 
     Offer createOffer(Offer offer, Long agentId);
 
-    Agent getFromToken() throws JsonProcessingException;
-
-    List<AgentRequest> getOfferedRequestsByEmail(String email);
+    Agent getAgentFromToken() throws JsonProcessingException;
 
     Agent resetPassword(String oldPassword, String repeatPassword);
 
@@ -33,7 +36,11 @@ public interface AgentService {
 
     Agent findAgent(String email);
 
-    void stopRequest(String uuid);
+    void listenStopQueue(String uuid);
+
+    void listenRequestQueue(RequestDto requestDto);
+
+    void listenAcceptQueue(AcceptDto acceptDto);
 
     void checkRequestEndTime();
 
