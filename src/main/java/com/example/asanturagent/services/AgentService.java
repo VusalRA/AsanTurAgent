@@ -1,6 +1,5 @@
 package com.example.asanturagent.services;
 
-import com.example.asanturagent.dtos.StopDto;
 import com.example.asanturagent.models.Agent;
 import com.example.asanturagent.models.AgentRequest;
 import com.example.asanturagent.models.Offer;
@@ -24,7 +23,7 @@ public interface AgentService {
 
     List<AgentRequest> getOfferedRequestsByEmail(String email);
 
-    Agent resetPassword(String oldPassword,String repeatPassword);
+    Agent resetPassword(String oldPassword, String repeatPassword);
 
     Agent forgotPassword(String email);
 
@@ -34,7 +33,7 @@ public interface AgentService {
 
     Agent findAgent(String email);
 
-    void stopRequest(StopDto stopDto);
+    void stopRequest(String uuid);
 
     void checkRequestEndTime();
 

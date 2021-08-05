@@ -1,5 +1,6 @@
 package com.example.asanturagent.services;
 
+import com.example.asanturagent.exceptions.EmailAlreadyTakenException;
 import com.example.asanturagent.models.Agent;
 import com.example.asanturagent.registration.token.ConfirmationToken;
 import com.example.asanturagent.registration.token.ConfirmationTokenService;
@@ -24,7 +25,7 @@ public class AgentRegistrationService implements UserDetailsService {
     private final AgentRepository agentRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
-    
+
     @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
@@ -41,7 +42,7 @@ public class AgentRegistrationService implements UserDetailsService {
         if (userExists) {
             // TODO check of attributes are the same and
             // TODO if email not confirmed send confirmation email.
-            throw new IllegalStateException("email already taken");
+            throw new EmailAlreadyTakenException();
         }
         String encodedPassword = bCryptPasswordEncoder
                 .encode(agent.getPassword());

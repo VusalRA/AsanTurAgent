@@ -4,7 +4,6 @@ import com.example.asanturagent.configs.RabbitConfig;
 import com.example.asanturagent.dtos.AcceptDto;
 import com.example.asanturagent.dtos.OfferDto;
 import com.example.asanturagent.dtos.RequestDto;
-import com.example.asanturagent.dtos.StopDto;
 import com.example.asanturagent.enums.Status;
 import com.example.asanturagent.exceptions.OldPasswordIncorrectException;
 import com.example.asanturagent.exceptions.RandomNumberIncorrectException;
@@ -160,13 +159,13 @@ public class AgentServiceImpl implements AgentService {
 
     @RabbitListener(queues = RabbitConfig.QUEUE4)
     @Override
-    public void stopRequest(StopDto stopDto) {
-
-        Request request = requestRepo.findByUuid(stopDto.getUuid());
+    public void stopRequest(String uuid) {
+        Request request = requestRepo.findByUuid(uuid);
         AgentRequest agentRequest = agentRequestRepo.findByRequest(request);
-        agentRequest.setStatus(Status.EXPIRED.name());
+        if (!agentRequest.getStatus().equals(Status.ACCEPT.name())) {
+            agentRequest.setStatus(Status.EXPIRED.name());
+        }
         agentRequestRepo.save(agentRequest);
-
     }
 
 
