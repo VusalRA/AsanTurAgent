@@ -6,10 +6,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class TurAiAgentApplication {
+public class AsanTurAgentApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TurAiAgentApplication.class, args);
+        SpringApplication.run(AsanTurAgentApplication.class, args);
     }
 
 }

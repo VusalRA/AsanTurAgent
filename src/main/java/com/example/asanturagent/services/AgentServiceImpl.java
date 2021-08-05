@@ -105,11 +105,6 @@ public class AgentServiceImpl implements AgentService {
         return agentRequestRepo.findAllByAgentIdAndArchiveTrue(agentId);
     }
 
-//    @Override
-//    public List<AgentRequest> getOfferedRequests(Long agentId) {
-//        return agentRequestRepo.findAllByAgentId(agentId);
-//    }
-
     public List<AgentRequest> getOfferedRequestsByEmail(String email) {
         Agent agent = agentRepo.findUserByEmail(email);
         return agentRequestRepo.findAllByAgentId(agent.getId());
