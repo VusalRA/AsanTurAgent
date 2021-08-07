@@ -82,9 +82,17 @@ public class RabbitConfig {
     }
 
     @Bean
-    public AmqpTemplate template(ConnectionFactory connectionFactory) {
-        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(converter());
-        return rabbitTemplate;
+    public ConnectionFactory connectionFactory() throws URISyntaxException {
+        final URI rabbitMqUrl = new URI(System.getenv("CLOUDAMQP_URL"));
+        final CachingConnectionFactory factory = new CachingConnectionFactory();
+        factory.setUri(rabbitMqUrl);
+        return factory;
+    }
+
+    @Bean
+    public RabbitTemplate template() throws URISyntaxException {
+        RabbitTemplate temp = new RabbitTemplate(connectionFactory());
+        temp.setMessageConverter(converter());
+        return temp;
     }
 }
