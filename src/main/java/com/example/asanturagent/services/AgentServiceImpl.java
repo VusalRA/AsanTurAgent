@@ -51,8 +51,8 @@ public class AgentServiceImpl implements AgentService {
     @Value("${waiting.hours}")
     int waitingHours;
 
-    @Value("${image.path}")
-    private String imagePath;
+//    @Value("${image.path}")
+//    private String imagePath;
 
     @Value("${jasper.filename}")
     private String jasperFileName;
