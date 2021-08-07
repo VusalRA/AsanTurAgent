@@ -1,4 +1,4 @@
-package com.example.asanturagent.configs;
+package com.example.asanturagent.configs.product;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Profile;
 
 
 @Configuration
-@Profile("dev")
+@Profile("!dev")
 public class RabbitConfig {
 
     public static final String QUEUE = "offer_queue";
