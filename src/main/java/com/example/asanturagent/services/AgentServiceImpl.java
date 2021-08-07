@@ -26,10 +26,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -257,7 +259,7 @@ public class AgentServiceImpl implements AgentService {
                 createJpgWithOffer(getOffer.getId());
             } catch (URISyntaxException e) {
                 e.printStackTrace();
-            } catch (JRException e) {
+            } catch (JRException | FileNotFoundException e) {
                 e.printStackTrace();
             }
             AgentRequest agentRequest = agentRequestRepo.findByAgentIdAndRequestId(agentId, request.getId());
@@ -267,7 +269,7 @@ public class AgentServiceImpl implements AgentService {
         return offer;
     }
 
-    public OfferDto createJpgWithOffer(Long offerId) throws URISyntaxException, JRException {
+    public OfferDto createJpgWithOffer(Long offerId) throws URISyntaxException, JRException, FileNotFoundException {
         URL res = getClass().getClassLoader().getResource(jasperFileName);
         File file = Paths.get(res.toURI()).toFile();
         Offer offer = offerRepo.findById(offerId).get();
@@ -280,8 +282,9 @@ public class AgentServiceImpl implements AgentService {
 
 //        URL res = getClass().getClassLoader().getResource(jasperFileName);
 //        File file = Paths.get(res.toURI()).toFile();
-        URL urlPath = getClass().getClassLoader().getResource("image.png");
-        File file1 = Paths.get(urlPath.toURI()).toFile();
+//        URL urlPath = getClass().getClassLoader().getResource("image.png");
+//        File file1 = Paths.get(urlPath.toURI()).toFile();
+        File file1 = ResourceUtils.getFile("image.png");
         String path = file1.getAbsolutePath();
 
 //        String path = System.getProperty("user.home") + imagePath;
