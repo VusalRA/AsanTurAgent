@@ -53,9 +53,6 @@ public class AgentServiceImpl implements AgentService {
     @Value("${waiting.hours}")
     int waitingHours;
 
-//    @Value("${image.path}")
-//    private String imagePath;
-
     @Value("${jasper.filename}")
     private String jasperFileName;
 
@@ -279,15 +276,8 @@ public class AgentServiceImpl implements AgentService {
         Map<String, Object> map = new HashMap<>();
         map.put("createdBy", "Vusal");
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource);
-
-//        URL res = getClass().getClassLoader().getResource(jasperFileName);
-//        File file = Paths.get(res.toURI()).toFile();
-//        URL urlPath = getClass().getClassLoader().getResource("image.png");
-//        File file1 = Paths.get(urlPath.toURI()).toFile();
         File file1 = ResourceUtils.getFile("image.png");
         String path = file1.getAbsolutePath();
-
-//        String path = System.getProperty("user.home") + imagePath;
 
         CreateImage.createImageWithJasper(path, jasperPrint);
 

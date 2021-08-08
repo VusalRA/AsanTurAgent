@@ -40,8 +40,6 @@ public class AgentRegistrationService implements UserDetailsService {
                 .findByEmail(agent.getEmail())
                 .isPresent();
         if (userExists) {
-            // TODO check of attributes are the same and
-            // TODO if email not confirmed send confirmation email.
             throw new EmailAlreadyTakenException();
         }
         String encodedPassword = bCryptPasswordEncoder
@@ -57,7 +55,6 @@ public class AgentRegistrationService implements UserDetailsService {
         );
         confirmationTokenService.saveConfirmationToken(
                 confirmationToken);
-//        TODO: SEND EMAIL
         return token;
     }
 

@@ -13,10 +13,7 @@ public interface AgentRequestRepository extends JpaRepository<AgentRequest, Long
 
     @Query("SELECT agentRequest FROM AgentRequest agentRequest where agentRequest.agentId=:agentId and agentRequest.status='OFFERED'")
     List<AgentRequest> findAllByAgentId(Long agentId);
-//and agentRequest.status='OFFERED'
-//    List<AgentRequest> findAllByAgentId
 
-    //    @Query("SELECT agentRequest FROM AgentRequest agentRequest where agentRequest.agentId=:agentId and agentRequest.requestId=:requestId and agentRequest.status='NEW_REQUEST'")
     Boolean existsByAgentIdAndRequestIdAndStatus(Long agentId, Long requestId, String status);
 
     @Query("SELECT agentRequest FROM AgentRequest  agentRequest where agentRequest.agentId=:agentId")

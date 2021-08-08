@@ -17,11 +17,6 @@ public interface AgentService {
 
     List<AgentRequest> getArchiveList(Long agentId);
 
-//    List<AgentRequest> getOfferedRequests(Long agentId);
-
-//    List<AgentRequest> getOfferedRequestsByEmail(String email);
-
-
     Offer createOffer(Offer offer, Long agentId);
 
     Agent getAgentFromToken() throws JsonProcessingException;
