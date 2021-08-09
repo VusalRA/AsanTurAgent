@@ -1,0 +1,13 @@
+###
+//@no-log
+POST http://localhost:9696/api/v1/offered
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "uuid": "b3644c10-b39b-4f0d-8495-16be23300e3c",
+  "price": "100",
+  "dateRange": "20-02-2021   03-03-2021",
+  "description": "A tour description is the marketing content that explains what your tour is and it's unique selling points",
+  "notes": "The purpose of a tour description is to supply potential customers with details about the features of the tour, so they’re compelled to purchase their ticket"
+}
