@@ -26,6 +26,7 @@ public interface AgentRequestRepository extends JpaRepository<AgentRequest, Long
 
     List<AgentRequest> findAllByAgentIdAndArchiveTrue(Long agentId);
 
-    List<AgentRequest> findAllByAgentIdAndStatus(Long agentId, String status);
+
+    List<AgentRequest> findAllByAgentIdAndStatusAndArchiveFalse(Long agentId, String status);
 
 }

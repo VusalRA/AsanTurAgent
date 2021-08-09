@@ -123,7 +123,7 @@ public class AgentServiceImpl implements AgentService {
     @Override
     public List<AgentRequest> getAllRequest(String email, String status) {
         Agent agent = agentRepo.findUserByEmail(email);
-        return agentRequestRepo.findAllByAgentIdAndStatus(agent.getId(), status);
+        return agentRequestRepo.findAllByAgentIdAndStatusAndArchiveFalse(agent.getId(), status);
     }
 
 
