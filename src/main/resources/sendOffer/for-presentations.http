@@ -5,7 +5,7 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "uuid": "b3644c10-b39b-4f0d-8495-16be23300e3c",
+  "uuid": "1b624ebc-aa89-4b3e-acd9-06805b544885",
   "price": "100",
   "dateRange": "20-02-2021   03-03-2021",
   "description": "A tour description is the marketing content that explains what your tour is and it's unique selling points",
